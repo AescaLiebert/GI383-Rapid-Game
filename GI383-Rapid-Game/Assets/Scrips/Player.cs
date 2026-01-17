@@ -9,10 +9,11 @@ public class Player : MonoBehaviour
     [Header("Movement Stats")]
     public float jump;
     public float speed;
-    public float dash;
-
+    
+    [Header("Weapon Stats")]
     private string weaponName;
-
+    [Header("Dash Stats")
+    public float dash;
 
     public SpriteRenderer spriteRenderer;
     private Vector2 moveInput;
