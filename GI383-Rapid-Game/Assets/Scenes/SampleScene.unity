@@ -431,7 +431,10 @@ MonoBehaviour:
   level: 0
   jump: 15
   speed: 8
-  dash: 0
+  dashspeed: 30
+  dashCooldown: 1
+  dashTime: 0.08
+  dashing: 0
   spriteRenderer: {fileID: 593073167}
   rb: {fileID: 593073165}
   groundCheck: {fileID: 851459103}
@@ -717,7 +720,7 @@ Transform:
   m_GameObject: {fileID: 851459102}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.96805, y: -1.0668, z: 0}
+  m_LocalPosition: {x: -0.09, y: -1.0668, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
