@@ -11,8 +11,12 @@ public class Player : MonoBehaviour
     public float jump;
     public float speed;
     
-    [Header("Weapon Stats")]
+    [Header("Attack Stats")]
     private string weaponName;
+    [SerializeField]private Transform atttackpoit;
+    public Weapon currentWeapon;
+    
+
     [Header("Dash Stats")]
     public float dashspeed;
     public float dashCooldown;
@@ -43,7 +47,14 @@ public class Player : MonoBehaviour
     {
         if (moveInput.x != 0)
         {
-            spriteRenderer.flipX = moveInput.x < 0;
+            if (moveInput.x > 0 )
+            {
+                transform.localScale = new Vector3(1, 1, 1);
+            }
+            else if (moveInput.x < 0)
+            {
+                 transform.localScale = new Vector3(-1, 1, 1);
+            }    
         }
     }
 
@@ -69,6 +80,14 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void OnAttack (InputValue value)
+    {
+        if (value.isPressed)
+        {
+            currentWeapon.Attack();
+        }
+    }
+
     void FixedUpdate()
     {
 
@@ -91,7 +110,7 @@ public class Player : MonoBehaviour
         float originalGravity = rb.gravityScale;
         rb.gravityScale = 0;
 
-        float dashDirection = spriteRenderer.flipX ? -1f : 1f;
+        float dashDirection = transform.localScale.x;
         rb.linearVelocity = new Vector2(dashDirection * dashspeed, 0f);
 
         yield return new WaitForSeconds(dashTime);
