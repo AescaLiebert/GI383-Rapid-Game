@@ -756,8 +756,8 @@ Transform:
   m_GameObject: {fileID: 739756755}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.98, y: -0.44, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 2, y: -0.39, z: 0}
+  m_LocalScale: {x: 0.7307533, y: 1.004055, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 593073168}
@@ -781,6 +781,7 @@ MonoBehaviour:
   enemyLayers:
     serializedVersion: 2
     m_Bits: 64
+  swordPrefab: {fileID: 381193051420248638, guid: 932f7d721743bc440859036f8f2a5c93, type: 3}
 --- !u!1 &851459102
 GameObject:
   m_ObjectHideFlags: 0
