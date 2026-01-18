@@ -11,8 +11,11 @@ public class Player : MonoBehaviour
     public float jump;
     public float speed;
     
-    [Header("Weapon Stats")]
+    [Header("Attack Stats")]
     private string weaponName;
+    [SerializeField]private Transform atttackpoit;
+    public Weapon currentWeapon;
+
     [Header("Dash Stats")]
     public float dashspeed;
     public float dashCooldown;
@@ -46,6 +49,10 @@ public class Player : MonoBehaviour
         if (moveInput.x != 0)
         {
             spriteRenderer.flipX = moveInput.x > 0;
+            if (currentWeapon != null)
+            {
+                currentWeapon.Turn(moveInput.x > 0);
+            }
         }
 
         UpdateAnimationState();
@@ -92,6 +99,14 @@ public class Player : MonoBehaviour
        if (canDash && value.isPressed)
         {
             StartCoroutine(Dash());
+        }
+    }
+
+    public void OnAttack (InputValue value)
+    {
+        if (value.isPressed && currentWeapon != null)
+        {
+            currentWeapon.Attack();
         }
     }
 
