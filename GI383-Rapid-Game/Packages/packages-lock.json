@@ -95,7 +95,11 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.burst": {
+<<<<<<< Updated upstream
       "version": "1.8.23",
+=======
+      "version": "1.8.27",
+>>>>>>> Stashed changes
       "depth": 2,
       "source": "registry",
       "dependencies": {
@@ -112,7 +116,11 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.collections": {
+<<<<<<< Updated upstream
       "version": "2.5.1",
+=======
+      "version": "2.6.2",
+>>>>>>> Stashed changes
       "depth": 2,
       "source": "registry",
       "dependencies": {
@@ -172,7 +180,11 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.mathematics": {
+<<<<<<< Updated upstream
       "version": "1.3.2",
+=======
+      "version": "1.3.3",
+>>>>>>> Stashed changes
       "depth": 2,
       "source": "registry",
       "dependencies": {},
@@ -187,14 +199,22 @@
       }
     },
     "com.unity.nuget.mono-cecil": {
+<<<<<<< Updated upstream
       "version": "1.11.4",
+=======
+      "version": "1.11.6",
+>>>>>>> Stashed changes
       "depth": 3,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
     "com.unity.render-pipelines.core": {
+<<<<<<< Updated upstream
       "version": "17.0.4",
+=======
+      "version": "17.3.0",
+>>>>>>> Stashed changes
       "depth": 1,
       "source": "builtin",
       "dependencies": {
@@ -237,14 +257,22 @@
       }
     },
     "com.unity.searcher": {
+<<<<<<< Updated upstream
       "version": "4.9.3",
+=======
+      "version": "4.9.4",
+>>>>>>> Stashed changes
       "depth": 2,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
     "com.unity.shadergraph": {
+<<<<<<< Updated upstream
       "version": "17.0.4",
+=======
+      "version": "17.3.0",
+>>>>>>> Stashed changes
       "depth": 1,
       "source": "builtin",
       "dependencies": {
@@ -263,7 +291,11 @@
       }
     },
     "com.unity.test-framework.performance": {
+<<<<<<< Updated upstream
       "version": "3.1.0",
+=======
+      "version": "3.2.0",
+>>>>>>> Stashed changes
       "depth": 3,
       "source": "registry",
       "dependencies": {
