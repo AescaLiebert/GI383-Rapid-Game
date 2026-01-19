@@ -264,6 +264,10 @@ PrefabInstance:
       value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 5885729883357656711, guid: 336c58c912887fb4d9586ca29ce358df, type: 3}
+      propertyPath: HP
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5885729883357656711, guid: 336c58c912887fb4d9586ca29ce358df, type: 3}
       propertyPath: atttackpoit
       value: 
       objectReference: {fileID: 1548067362}
@@ -286,6 +290,67 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 336c58c912887fb4d9586ca29ce358df, type: 3}
+--- !u!1001 &616556589
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 6698984400229986755, guid: 13adecf6ba6d44e4e8e65c09c6e5149f, type: 3}
+      propertyPath: m_Name
+      value: Enemy1Prefab
+      objectReference: {fileID: 0}
+    - target: {fileID: 6698984400229986755, guid: 13adecf6ba6d44e4e8e65c09c6e5149f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8122425942301983957, guid: 13adecf6ba6d44e4e8e65c09c6e5149f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 16.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 8122425942301983957, guid: 13adecf6ba6d44e4e8e65c09c6e5149f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.73833
+      objectReference: {fileID: 0}
+    - target: {fileID: 8122425942301983957, guid: 13adecf6ba6d44e4e8e65c09c6e5149f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8122425942301983957, guid: 13adecf6ba6d44e4e8e65c09c6e5149f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8122425942301983957, guid: 13adecf6ba6d44e4e8e65c09c6e5149f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8122425942301983957, guid: 13adecf6ba6d44e4e8e65c09c6e5149f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8122425942301983957, guid: 13adecf6ba6d44e4e8e65c09c6e5149f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8122425942301983957, guid: 13adecf6ba6d44e4e8e65c09c6e5149f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8122425942301983957, guid: 13adecf6ba6d44e4e8e65c09c6e5149f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8122425942301983957, guid: 13adecf6ba6d44e4e8e65c09c6e5149f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 13adecf6ba6d44e4e8e65c09c6e5149f, type: 3}
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -444,10 +509,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameManager
       objectReference: {fileID: 0}
+    - target: {fileID: 6960755422001756797, guid: 051c5493486df0942a4ce9e179eb4c06, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8249747323291832601, guid: 051c5493486df0942a4ce9e179eb4c06, type: 3}
       propertyPath: player
       value: 
       objectReference: {fileID: 169309579}
+    - target: {fileID: 8249747323291832601, guid: 051c5493486df0942a4ce9e179eb4c06, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8249747323291832601, guid: 051c5493486df0942a4ce9e179eb4c06, type: 3}
       propertyPath: groundLayer.m_Bits
       value: 8
@@ -620,3 +693,4 @@ SceneRoots:
   - {fileID: 3299818265707708739}
   - {fileID: 2365212513845830567}
   - {fileID: 555279491}
+  - {fileID: 616556589}

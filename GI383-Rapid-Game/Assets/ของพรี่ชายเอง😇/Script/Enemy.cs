@@ -1,5 +1,6 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Rendering;
 public class Enemy : MonoBehaviour
 {
     [Header("Stats")]
@@ -12,7 +13,18 @@ public class Enemy : MonoBehaviour
 
     [Header("Knockback Settings")] 
     public float knockbackForce = 5f; 
-    public float knockbackDuration = 0.2f; 
+    public float knockbackDuration = 0.2f;
+
+    [Header("Attack Settings")]
+    public float attackRange = 1.5f; 
+    public float attackCooldown = 1.5f; 
+    private float nextAttackTime = 0f;  
+    public int damage = 10;
+    public Transform attackPoint;
+    public Vector2 attackArea = new Vector2(1f, 0.5f);
+
+    public GameObject slash;
+
 
     private bool isKnockedBack = false;
 
@@ -38,17 +50,31 @@ public class Enemy : MonoBehaviour
     {
         if (isKnockedBack) return;
 
-        if (player != null)
+        float distanceFromPlayer = Vector2.Distance(transform.position, player.position);
+
+        if (distanceFromPlayer > attackRange)
         {
             MoveTowardsPlayer();
         }
+        else
+        {
+            StopMoving();
 
+            if (Time.time >= nextAttackTime)
+            {
+                AttackPlayer();
+                nextAttackTime = Time.time + attackCooldown;
+            }
+        }
         // Anti-float logic:
         // If we are grounded, do not allow upward velocity (unless we add jumping later).
         // This prevents the enemy from 'climbing' the player collider.
+        
+
+        
         if (IsGrounded() && rb.linearVelocity.y > 0)
         {
-             rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
         }
     }
 
@@ -63,7 +89,23 @@ public class Enemy : MonoBehaviour
         // Visual handling checks
         if (direction.x != 0)
         {
-            spriteRenderer.flipX = direction.x > 0;
+            bool faceRight = direction.x > 0;
+            spriteRenderer.flipX = faceRight;
+            Vector3 currentPos = attackPoint.localPosition;
+
+            if (faceRight)
+            {
+                
+                currentPos.x = Mathf.Abs(currentPos.x);
+            }
+            else
+            {
+               
+                currentPos.x = -Mathf.Abs(currentPos.x);
+            }
+
+            
+            attackPoint.localPosition = currentPos;
         }
     }
 
@@ -105,5 +147,48 @@ public class Enemy : MonoBehaviour
 
         yield return new WaitForSeconds(knockbackDuration);
         isKnockedBack = false;
+    }
+    void StopMoving()
+    {
+        
+        rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+    }
+
+    void AttackPlayer()
+    {
+
+        if (slash != null)
+        {
+            GameObject currentSlash = Instantiate(slash, attackPoint.position, attackPoint.rotation);
+            
+            if(spriteRenderer.flipX == true)
+            {
+                Vector3 newScale = currentSlash.transform.localScale;
+                newScale.x *= 1; 
+                newScale.y *= -1; 
+                currentSlash.transform.localScale = newScale;
+            }
+        }
+        Debug.Log("โจมตีผู้เล่น!");
+
+        
+        Player playerScript = player.GetComponent<Player>();
+        if (playerScript != null)
+        {
+            playerScript.TakeDamage(damage);
+            Debug.Log("Enemy โจมตีโดนผู้เล่น!");
+        }
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        if (attackPoint == null) return;
+
+        Gizmos.color = Color.red;
+
+        Gizmos.matrix = Matrix4x4.TRS(attackPoint.position, attackPoint.rotation, Vector3.one);
+
+
+        Gizmos.DrawWireCube(Vector3.zero, attackArea);
     }
 }

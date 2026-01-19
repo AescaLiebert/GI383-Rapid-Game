@@ -180,7 +180,15 @@ public class Player : MonoBehaviour
         }
     }    
 
-
+    public void TakeDamage(int damage)
+    {
+       HP -= damage;
+        
+        if (HP <= 0 )
+        {
+           Debug.Log("Player Dead");
+        }
+    }
 
 
 
