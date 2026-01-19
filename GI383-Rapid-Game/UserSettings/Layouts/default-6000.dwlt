@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1920
     height: 989
   m_ShowMode: 4
-  m_Title: Hierarchy
+  m_Title: Game
   m_RootView: {fileID: 4}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -43,8 +43,8 @@ MonoBehaviour:
     y: 431
     width: 1003
     height: 502
-  m_MinSize: {x: 50, y: 50}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 51, y: 76}
+  m_MaxSize: {x: 4001, y: 4026}
   m_ActualView: {fileID: 14}
   m_Panes:
   - {fileID: 14}
@@ -246,8 +246,8 @@ MonoBehaviour:
     y: 0
     width: 465
     height: 428
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 202, y: 226}
+  m_MaxSize: {x: 4002, y: 4026}
   m_ActualView: {fileID: 19}
   m_Panes:
   - {fileID: 19}
@@ -300,8 +300,8 @@ MonoBehaviour:
     y: 0
     width: 452
     height: 933
-  m_MinSize: {x: 275, y: 50}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 276, y: 76}
+  m_MaxSize: {x: 4001, y: 4026}
   m_ActualView: {fileID: 21}
   m_Panes:
   - {fileID: 21}
@@ -824,7 +824,7 @@ MonoBehaviour:
     m_DynamicPanelBehavior: 0
   m_LockTracker:
     m_IsLocked: 0
-  m_LastSelectedObjectID: -64064
+  m_LastSelectedObjectID: 41264
 --- !u!114 &17
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -1672,12 +1672,11 @@ MonoBehaviour:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs:
-      - m_Data: -64064
+      - m_Data: 41264
       m_LastClickedID:
         m_Data: 0
       m_ExpandedIDs:
-      - m_Data: -73404
-      - m_Data: -1316
+      - m_Data: -1324
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1752,7 +1751,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - "Assets/\u0E02\u0E2D\u0E07\u0E1E\u0E23\u0E35\u0E48\u0E0A\u0E32\u0E22\u0E40\u0E2D\u0E07\U0001F607/Animation"
+    - Assets/Scripts
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -1762,7 +1761,7 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - "Assets/\u0E02\u0E2D\u0E07\u0E1E\u0E23\u0E35\u0E48\u0E0A\u0E32\u0E22\u0E40\u0E2D\u0E07\U0001F607/Animation"
+  - Assets/Scripts
   m_LastFoldersGridSize: 16
   m_LastProjectPath: D:\Unity\project\GI383-Rapid-Game\GI383-Rapid-Game
   m_LockTracker:
@@ -1771,30 +1770,30 @@ MonoBehaviour:
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs:
-    - m_Data: 47608
+    - m_Data: 47522
     m_LastClickedID:
-      m_Data: 47608
+      m_Data: 47522
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 47460
-    - m_Data: 47462
-    - m_Data: 47464
-    - m_Data: 47466
-    - m_Data: 47468
-    - m_Data: 47470
-    - m_Data: 47472
-    - m_Data: 47474
-    - m_Data: 47476
-    - m_Data: 47478
-    - m_Data: 47480
-    - m_Data: 47482
-    - m_Data: 47596
-    - m_Data: 47598
-    - m_Data: 47602
+    - m_Data: 47500
+    - m_Data: 47502
+    - m_Data: 47504
+    - m_Data: 47506
+    - m_Data: 47508
+    - m_Data: 47510
+    - m_Data: 47512
+    - m_Data: 47514
+    - m_Data: 47516
+    - m_Data: 47518
+    - m_Data: 47520
+    - m_Data: 47522
+    - m_Data: 47524
+    - m_Data: 47526
+    - m_Data: 47638
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: Resources
-      m_OriginalName: Resources
+      m_Name: 
+      m_OriginalName: 
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
@@ -1802,10 +1801,10 @@ MonoBehaviour:
         width: 0
         height: 0
       m_UserData:
-        m_Data: 47602
+        m_Data: 0
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
-      m_OriginalEventType: 0
+      m_OriginalEventType: 11
       m_IsRenamingFilename: 1
       m_TrimLeadingAndTrailingWhitespace: 0
       m_ClientGUIView: {fileID: 11}
@@ -1823,18 +1822,20 @@ MonoBehaviour:
       m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 47460
-    - m_Data: 47462
-    - m_Data: 47464
-    - m_Data: 47466
-    - m_Data: 47468
-    - m_Data: 47470
-    - m_Data: 47472
-    - m_Data: 47474
-    - m_Data: 47476
-    - m_Data: 47478
-    - m_Data: 47480
-    - m_Data: 47482
+    - m_Data: 47500
+    - m_Data: 47502
+    - m_Data: 47504
+    - m_Data: 47506
+    - m_Data: 47508
+    - m_Data: 47510
+    - m_Data: 47512
+    - m_Data: 47514
+    - m_Data: 47516
+    - m_Data: 47518
+    - m_Data: 47520
+    - m_Data: 47522
+    - m_Data: 47524
+    - m_Data: 47526
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1862,9 +1863,9 @@ MonoBehaviour:
       m_ResourceFile: 
   m_ListAreaState:
     m_SelectedInstanceIDs:
-    - m_Data: -64064
-    m_LastClickedInstanceID: -64064
-    m_HadKeyboardFocusLastEvent: 0
+    - m_Data: 41264
+    m_LastClickedInstanceID: 41264
+    m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs:
     - m_Data: 47002
     m_RenameOverlay:

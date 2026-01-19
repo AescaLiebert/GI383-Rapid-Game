@@ -58,10 +58,10 @@ public class Sword : Weapon
         if (attackPoint == null) return;
 
         Gizmos.color = Color.red;
-        // บรรทัดนี้จะช่วยให้สี่เหลี่ยมหมุนตามดาบของเราได้
+        
         Gizmos.matrix = Matrix4x4.TRS(attackPoint.position, attackPoint.rotation, Vector3.one);
 
-        // วาดสี่เหลี่ยม (Cube) ที่ตำแหน่ง 0,0 (เพราะเราย้าย matrix มาที่ attackPoint แล้ว)
+        
         Gizmos.DrawWireCube(Vector3.zero, attackArea);
     }
 }
