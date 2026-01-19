@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using System.Collections;
 public class Enemy : MonoBehaviour
 {
     [Header("Stats")]
@@ -9,6 +9,12 @@ public class Enemy : MonoBehaviour
     [Header("Ground Check")]
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundLayer;
+
+    [Header("Knockback Settings")] 
+    public float knockbackForce = 5f; 
+    public float knockbackDuration = 0.2f; 
+
+    private bool isKnockedBack = false;
 
     private Transform player;
     private Rigidbody2D rb;
@@ -30,6 +36,8 @@ public class Enemy : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (isKnockedBack) return;
+
         if (player != null)
         {
             MoveTowardsPlayer();
@@ -67,6 +75,13 @@ public class Enemy : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+
+        if(hp > 0)
+        {
+            StopCoroutine(KnockedBackRoutine());
+            StartCoroutine(KnockedBackRoutine());
+        }
+
         hp -= damage;
         if (hp <= 0)
         {
@@ -78,5 +93,17 @@ public class Enemy : MonoBehaviour
     {
         // Notify WaveManager or Spawner if needed (can be done via event or static reference)
         Destroy(gameObject);
+    }
+
+    IEnumerator KnockedBackRoutine()
+    {
+        isKnockedBack = true;
+        Vector2 direction = (transform.position - player.position).normalized;
+
+        rb.linearVelocity = Vector2.zero;
+        rb.AddForce(direction * knockbackForce, ForceMode2D.Impulse);
+
+        yield return new WaitForSeconds(knockbackDuration);
+        isKnockedBack = false;
     }
 }

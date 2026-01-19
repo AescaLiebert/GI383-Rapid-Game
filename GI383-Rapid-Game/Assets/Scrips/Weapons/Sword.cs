@@ -48,8 +48,8 @@ public class Sword : Weapon
             {
                 Debug.Log("ฟันโดน " + enemy.name);
 
-                // ถ้าศัตรูมีสคริปต์ Character หรือ Enemy ให้เรียกฟังก์ชันเจ็บ
-                // enemy.GetComponent<Character>()?.TakeDamage(damage);
+                
+                enemy.GetComponent<Enemy>()?.TakeDamage(damage);
             }
     }
 
