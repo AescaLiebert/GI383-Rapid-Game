@@ -18,7 +18,9 @@ public class Enemy : MonoBehaviour
     [Header("Attack Settings")]
     public float attackRange = 1.5f; 
     public float attackCooldown = 1.5f; 
+    public float attackDelay = 0.5f; // Delay before damage is dealt
     private float nextAttackTime = 0f;  
+    private bool isAttacking = false;  
     public int damage = 10;
     public Transform attackPoint;
     public Vector2 attackArea = new Vector2(1f, 0.5f);
@@ -31,11 +33,14 @@ public class Enemy : MonoBehaviour
     private Transform player;
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
+    private Color originalColor;
+    private Coroutine knockbackCoroutine;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        originalColor = spriteRenderer.color;
         
         // Find player by tag or type. defaulting to FindObjectOfType for simplicity if tag isn't set.
         // Assuming the Player script is attached to the player object.
@@ -48,7 +53,7 @@ public class Enemy : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (isKnockedBack) return;
+        if (isKnockedBack || isAttacking) return;
 
         float distanceFromPlayer = Vector2.Distance(transform.position, player.position);
 
@@ -62,8 +67,8 @@ public class Enemy : MonoBehaviour
 
             if (Time.time >= nextAttackTime)
             {
-                AttackPlayer();
-                nextAttackTime = Time.time + attackCooldown;
+                StartCoroutine(AttackRoutine());
+                nextAttackTime = Time.time + attackCooldown + attackDelay;
             }
         }
         // Anti-float logic:
@@ -120,8 +125,11 @@ public class Enemy : MonoBehaviour
 
         if(hp > 0)
         {
-            StopCoroutine(KnockedBackRoutine());
-            StartCoroutine(KnockedBackRoutine());
+            if (knockbackCoroutine != null)
+            {
+                StopCoroutine(knockbackCoroutine);
+            }
+            knockbackCoroutine = StartCoroutine(KnockedBackRoutine());
         }
 
         hp -= damage;
@@ -144,9 +152,15 @@ public class Enemy : MonoBehaviour
 
         rb.linearVelocity = Vector2.zero;
         rb.AddForce(direction * knockbackForce, ForceMode2D.Impulse);
+        
+        spriteRenderer.color = Color.red;
 
         yield return new WaitForSeconds(knockbackDuration);
+        
         isKnockedBack = false;
+        spriteRenderer.color = Color.white;
+        yield return new WaitForSeconds(1f);
+        spriteRenderer.color = originalColor;
     }
     void StopMoving()
     {
@@ -154,8 +168,12 @@ public class Enemy : MonoBehaviour
         rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
     }
 
-    void AttackPlayer()
+    IEnumerator AttackRoutine()
     {
+        isAttacking = true;
+        // Optional: Trigger "Prepare" animation or color change here to telegraph attack
+
+        yield return new WaitForSeconds(attackDelay);
 
         if (slash != null)
         {
@@ -175,9 +193,29 @@ public class Enemy : MonoBehaviour
         Player playerScript = player.GetComponent<Player>();
         if (playerScript != null)
         {
-            playerScript.TakeDamage(damage);
-            Debug.Log("Enemy โจมตีโดนผู้เล่น!");
+            // Re-check distance or collider here? 
+            // For now, simple distance check or just hit if still in range?
+            // User asked for dodge, so we should probably check if player is still within effective range or use a collider check.
+            // But preserving original logic: "Enemy โจมตีโดนผู้เล่น" which was guaranteed if AttackPlayer was called.
+            // If we want dodge, we must check for hit connection *after* delay.
+            
+            // Let's check distance again to see if player successfully dodged out of range.
+            float distance = Vector2.Distance(transform.position, player.position);
+            // We can treat attackArea as the effective hit box.
+            // Since we don't have a real hitbox collider logic here (it was just direct damage), 
+            // let's assume if player is within attackRange + small buffer, they get hit.
+            if (distance <= attackRange * 1.2f) 
+            {
+                playerScript.TakeDamage(damage);
+                Debug.Log("Enemy โจมตีโดนผู้เล่น!");
+            }
+            else
+            {
+                Debug.Log("Player Dodged!");
+            }
         }
+        
+        isAttacking = false;
     }
 
     void OnDrawGizmosSelected()

@@ -54,7 +54,7 @@
                 {
                     "name": "Shoot",
                     "type": "Button",
-                    "id": "b96d9938-bc18-4736-8483-c2f3a9277a3f",
+                    "id": "81daf5ad-abd9-4d71-8eb0-e46ce6441020",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -505,7 +505,7 @@
                 },
                 {
                     "name": "",
-                    "id": "9b993e53-90a1-459a-b990-6c22a9038960",
+                    "id": "434fb348-1999-4395-83a6-8c73d653c972",
                     "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",

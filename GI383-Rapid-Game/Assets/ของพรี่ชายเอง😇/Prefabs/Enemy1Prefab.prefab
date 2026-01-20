@@ -56,7 +56,7 @@ Transform:
   m_GameObject: {fileID: 4965755359711661460}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.46, y: -0.04, z: 0}
+  m_LocalPosition: {x: 0.89, y: -0.04, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -244,7 +244,8 @@ MonoBehaviour:
   knockbackDuration: 0.2
   attackRange: 2.14
   attackCooldown: 1.5
+  attackDelay: 0.5
   damage: 1
   attackPoint: {fileID: 241974018674737415}
-  attackArea: {x: 2.99, y: 2.16}
+  attackArea: {x: 2, y: 2.16}
   slash: {fileID: 7461607183011662884, guid: d74bb0a32e99661408211ffd2c0f76d3, type: 3}

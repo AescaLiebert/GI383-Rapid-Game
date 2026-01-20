@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &870284396353555719
+--- !u!1 &1662058320042426280
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,46 +8,46 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 9099479888029779061}
-  - component: {fileID: 3182592605281105835}
-  m_Layer: 0
-  m_Name: kinfe
+  - component: {fileID: 8470793239955635061}
+  - component: {fileID: 4452035781579981097}
+  m_Layer: 7
+  m_Name: Knife
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &9099479888029779061
+--- !u!4 &8470793239955635061
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 870284396353555719}
+  m_GameObject: {fileID: 1662058320042426280}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.28495, y: 0.73353, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2, y: -0.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2444777215796051656}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3182592605281105835
+--- !u!114 &4452035781579981097
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 870284396353555719}
+  m_GameObject: {fileID: 1662058320042426280}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d4ac5ce4839002478e8d3e4152fd431, type: 3}
+  m_Script: {fileID: 11500000, guid: 8342e55ce0147c74ba16257213552902, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Knife
+  m_EditorClassIdentifier: Assembly-CSharp::ThrowKnife
   damage: 0
   cooldownTime: 0
   attackDuration: 0.2
-  bulletPrefab: {fileID: 7477496124286756750, guid: 2a649dff5a62bb04cbd1f26d2add2441, type: 3}
+  bulletPrefab: {fileID: 2360545146390537314, guid: 37dd444fa5056c24ca90b8df85e7ba13, type: 3}
   firePoint: {fileID: 926302801658061068}
 --- !u!1 &5155562940040348022
 GameObject:
@@ -75,7 +75,7 @@ Transform:
   m_GameObject: {fileID: 5155562940040348022}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.86, y: -0.2, z: 0}
+  m_LocalPosition: {x: -2, y: -0.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -93,11 +93,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ff9c5e8e950bc74a8c755a23fc192e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 5
-  cooldownTime: 0.5
+  damage: 3
+  cooldownTime: 0.1
   attackDuration: 0.2
   attackPoint: {fileID: 926302801658061068}
-  attackArea: {x: 3.04, y: 1.84}
+  attackArea: {x: 2.87, y: 1.7}
   enemyLayers:
     serializedVersion: 2
     m_Bits: 64
@@ -283,7 +283,7 @@ Transform:
   m_GameObject: {fileID: 8495324065478662333}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.31, y: -0.06, z: 0}
+  m_LocalPosition: {x: -1.47, y: -0.06, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -306,7 +306,7 @@ GameObject:
   - component: {fileID: 5885729883357656711}
   m_Layer: 7
   m_Name: player
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -328,7 +328,7 @@ Transform:
   - {fileID: 1295893265555429504}
   - {fileID: 926302801658061068}
   - {fileID: 5090054729884593728}
-  - {fileID: 9099479888029779061}
+  - {fileID: 8470793239955635061}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8307042286228816184
@@ -378,7 +378,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -7720591882282890268, guid: eb8d6a565b3c6de46936ddcc91f46ef7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -520,26 +520,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HP: 10
   level: 0
-  deathPanal: {fileID: 0}
   jump: 15
   speed: 8
   atttackpoit: {fileID: 926302801658061068}
   currentWeapon: {fileID: 2906556909002122561}
-  knifeWeapon: {fileID: 3182592605281105835}
+  knifeWeapon: {fileID: 4452035781579981097}
   dashspeed: 30
   dashCooldown: 1
   dashTime: 0.08
   dashing: 0
+  knockbackForceY: 5
+  hitStunTime: 0.2
+  invincibilityTime: 1.5
+  hitStopDuration: 0.1
+  shakeDuration: 0.2
+  shakeMagnitude: 0.4
   jumpStartupTime: 0.05
   landingLagTime: 0.1
   bufferWindow: 0.3
+  deathPanel: {fileID: 0}
   anim: {fileID: 2394366822511294326}
   spriteRenderer: {fileID: 8307042286228816184}
   rb: {fileID: 8591976508056306242}
   groundCheck: {fileID: 4780734706369720512}
   groundLayer:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 72
 --- !u!1 &9135853940479833697
 GameObject:
   m_ObjectHideFlags: 0

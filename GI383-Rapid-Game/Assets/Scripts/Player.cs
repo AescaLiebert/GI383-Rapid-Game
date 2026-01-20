@@ -7,8 +7,9 @@ public class Player : MonoBehaviour
     [Header("Player Stats")]
     public int HP;
     public int level;
-
-    public GameObject deathPanal;
+    
+    [Header("UI References")]
+    public HealthBarUI healthBarUI;
     [Header("Movement Stats")]
     public float jump;
     public float speed;
@@ -18,6 +19,7 @@ public class Player : MonoBehaviour
     [SerializeField] private Transform atttackpoit;
     public Weapon currentWeapon;
     public Weapon knifeWeapon;
+
     [Header("Dash Stats")]
     public float dashspeed;
     public float dashCooldown;
@@ -26,10 +28,24 @@ public class Player : MonoBehaviour
     private bool canDash = true;
     public bool dashing;
 
+    [Header("Damage Settings")]
+    public float knockbackForceY = 5f;
+    public float hitStunTime = 0.2f;
+    public float invincibilityTime = 1.0f;
+    public float hitStopDuration = 0.1f;
+    public float shakeDuration = 0.2f;
+    public float shakeMagnitude = 0.3f;
+    private bool isHit = false;
+    private bool isInvincible = false;
+    private Color originalColor;
+
     [Header("Movement Feel")]
     public float jumpStartupTime = 0.05f; // Time before jump force is applied
     public float landingLagTime = 0.1f;   // Time locked after landing
     public float bufferWindow = 0.3f;    // Time to store input
+
+    public GameObject deathPanel; //GameOver Panel
+    public DeathSequenceController deathSequenceController;
 
     // State Flags
     private bool isJumpStarting;
@@ -37,6 +53,7 @@ public class Player : MonoBehaviour
     private bool isAttacking;
     private bool isShooting;
     private bool wasGrounded;
+    private bool isDead = false;
 
     // Action Buffer
     public enum BufferedAction { None, Jump, Dash, Attack , Shoot}
@@ -51,6 +68,8 @@ public class Player : MonoBehaviour
     public Rigidbody2D rb;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundLayer;
+    private int enemyLayer;
+    private CameraFollow camFollow;
 
 
 
@@ -58,6 +77,16 @@ public class Player : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        originalColor = spriteRenderer.color;
+        enemyLayer = LayerMask.NameToLayer("Enemy");
+        camFollow = Camera.main.GetComponent<CameraFollow>();
+        
+        // Initialize health bar UI
+        if (healthBarUI != null)
+        {
+            healthBarUI.UpdateHealth(HP);
+        }
     }
 
 
@@ -71,7 +100,7 @@ public class Player : MonoBehaviour
             // Only trigger landing lag if we were actually falling/in air significantly, 
             // but for simplicity, any ground touch triggers logic. 
             // We can check if we are not already landing to avoid re-triggering.
-            if (!isLanding && !isJumpStarting && !dashing && !isAttacking)
+            if (!isLanding && !isJumpStarting && !dashing && !isAttacking && !isHit)
             {
                 StartCoroutine(LandingCoroutine());
             }
@@ -95,8 +124,8 @@ public class Player : MonoBehaviour
         }
 
         // Movement Logic
-        // Lock Direction Change if Dashing OR JumpStarting OR Landing OR Attacking
-        bool isMovementLocked = dashing || isJumpStarting || isLanding || isAttacking || isShooting;
+        // Lock Direction Change if Dashing OR JumpStarting OR Landing OR Attacking OR Hit
+        bool isMovementLocked = dashing || isJumpStarting || isLanding || isAttacking || isHit || isShooting;
 
         if (!isMovementLocked && moveInput.x != 0)
         {
@@ -105,7 +134,8 @@ public class Player : MonoBehaviour
             {
                 currentWeapon.Turn(moveInput.x > 0);
             }
-            if (knifeWeapon != null)
+
+             if (knifeWeapon != null)
             {
                 knifeWeapon.Turn(moveInput.x > 0);
             }
@@ -116,30 +146,60 @@ public class Player : MonoBehaviour
 
     private void UpdateAnimationState()
     {
-        // Jump Animation
         bool isGrounded = IsGrounded();
-        anim.SetBool("IsJump", !isGrounded);
-
-        // Attack Animation
+        
+        // 1. Core State Triggers
+        // Priority: Hit > Attack > Shoot > Dash > Jump > Move/Idle
         anim.SetBool("IsAttack", isAttacking);
-
-        if (dashing)
+        anim.SetBool("IsShoot", isShooting);
+        anim.SetBool("IsDash", dashing);
+        anim.SetBool("IsTakeDamage", isHit);
+        
+        if (isHit)
         {
-            anim.SetBool("IsIdle", false);
-            anim.SetBool("IsWalk", false);
-            anim.SetBool("IsDash", true);
+             // If Hit, suppress everything else usually, but Animator might handle AnyState -> Hit
+             anim.SetBool("IsJump", false);
+             anim.SetBool("IsAttack", false);
+             anim.SetBool("IsShoot", false);
+             anim.SetBool("IsDash", false);
+             anim.SetBool("IsIdle", false);
+             anim.SetBool("IsWalk", false);
+             return; // Quick exit to ensure Hit takes over
         }
-        else if (moveInput.x != 0 && !isJumpStarting && !isLanding && !isAttacking)
+
+        if (isAttacking)
         {
-            anim.SetBool("IsIdle", false);
-            anim.SetBool("IsWalk", true);
-            anim.SetBool("IsDash", false);
+            // If attacking, suppress Jump state to prevent animation flickering/interruption
+            anim.SetBool("IsJump", false);
+        }
+        else if (isShooting)
+        {
+            // If shooting, suppress Jump state to prevent animation flickering/interruption
+            anim.SetBool("IsJump", false);
+        }
+        else if (dashing)
+        {
+            // If dashing, suppress Jump state to allow Air Dash animation
+            anim.SetBool("IsJump", false);
         }
         else
         {
-            anim.SetBool("IsIdle", true);
+            anim.SetBool("IsJump", !isGrounded);
+        }
+
+        // 2. Movement Logic (Idle/Walk)
+        // If we are doing a High Priority action (Dash, Attack, Shoot, Jump/Fall), disable basic ground movement animations
+        if (dashing || isAttacking || isShooting || !isGrounded)
+        {
+            anim.SetBool("IsIdle", false);
             anim.SetBool("IsWalk", false);
-            anim.SetBool("IsDash", false);
+        }
+        else 
+        {
+            // Grounded & Neutral
+            bool isMoving = moveInput.x != 0;
+            anim.SetBool("IsWalk", isMoving);
+            anim.SetBool("IsIdle", !isMoving);
         }
     }
 
@@ -176,6 +236,12 @@ public class Player : MonoBehaviour
     {
         if (value.isPressed)
         {
+            //Debug.Log("OnShoot called - Attempting to shoot");
+            if (knifeWeapon == null)
+            {
+                //Debug.LogWarning("Cannot shoot: knifeWeapon is not assigned! Please assign a ThrowKnife weapon to the knifeWeapon field in the Inspector.");
+                return;
+            }
             AttemptAction(BufferedAction.Shoot);
         }
     }
@@ -204,18 +270,19 @@ public class Player : MonoBehaviour
         switch (action)
         {
             case BufferedAction.Jump:
-                return IsGrounded() && !dashing && !isJumpStarting && !isLanding && !isAttacking;
+                return IsGrounded() && !dashing && !isJumpStarting && !isLanding && !isAttacking && !isHit;
 
             case BufferedAction.Dash:
-                return canDash && !dashing && !isJumpStarting && !isLanding && !isAttacking;
+                return canDash && !dashing && !isJumpStarting && !isLanding && !isAttacking && !isHit;
 
             case BufferedAction.Attack:
                 // Cannot attack if dashing, jumping start, landing, or ALREADY attacking
-                return currentWeapon != null && !dashing && !isJumpStarting && !isLanding && !isAttacking;
-           
+                return currentWeapon != null && !dashing && !isJumpStarting && !isLanding && !isAttacking && !isHit;
+            
             case BufferedAction.Shoot: // [NEW] ปืน
                 // ยิงได้ถ้ามีปืน และไม่ได้กำลังทำอย่างอื่น (รวมถึงไม่ได้ฟันดาบอยู่)
-                return knifeWeapon != null && !dashing && !isJumpStarting && !isLanding && !isAttacking && !isShooting;
+                return knifeWeapon != null && !dashing && !isJumpStarting && !isLanding && !isAttacking && !isShooting && !isHit;
+
             default:
                 return false;
         }
@@ -246,9 +313,19 @@ public class Player : MonoBehaviour
     {
         if (dashing) return;
 
-        // Disable movement if JumpStarting or Landing or Attacking
-        if (isJumpStarting || isLanding || isAttacking || isShooting)
+        // Disable movement if JumpStarting or Landing or Attacking or Hit
+        if (isJumpStarting || isLanding || isAttacking || isHit || isShooting)
         {
+            // If hit, we might want to respect knockback physics (which implies we shouldn't zero out X immediately IF we added X knockback)
+            // But for now, user only asked for Y knock up. However, locking X movement is fine.
+            // If we want pure physics knockback, we should avoid setting velocity here.
+            
+            if (isHit) 
+            {
+                 // Do not interfere with physics during knockback
+                 return;
+            }
+
             rb.linearVelocity = new Vector2(0, rb.linearVelocity.y); // Stop X movement, keep Y (gravity)
             return;
         }
@@ -268,6 +345,9 @@ public class Player : MonoBehaviour
         // Startup Delay (Movement Locked)
         yield return new WaitForSeconds(jumpStartupTime);
 
+        // Ignore Enemy Collision during jump
+        IgnoreEnemyCollision(true);
+
         // Apply Force
         rb.AddForce(Vector2.up * jump, ForceMode2D.Impulse);
 
@@ -278,6 +358,12 @@ public class Player : MonoBehaviour
     {
         isLanding = true;
         // Optional: Play landing anim or particulate
+
+        // Restore Enemy Collision on landing
+        if (!isInvincible)
+        {
+            IgnoreEnemyCollision(false);
+        }
 
         // Landing Lag (Movement Locked)
         yield return new WaitForSeconds(landingLagTime);
@@ -300,6 +386,7 @@ public class Player : MonoBehaviour
     private IEnumerator ShootCoroutine()
     {
         isShooting = true;
+        Debug.Log("ShootCoroutine executing - Shooting now!");
         knifeWeapon.Attack();
         yield return new WaitForSeconds(knifeWeapon.attackDuration);
         isShooting = false;
@@ -309,17 +396,14 @@ public class Player : MonoBehaviour
     {
         canDash = false;
         dashing = true;
+        isInvincible = true;
 
         // Immediately invalidate other buffered actions logic handled by CanPerformAction?
         // Actually, if we buffer a Jump during Dash, it will fire after Dash finishes.
 
         int playerLayer = gameObject.layer;
-        int enemyLayer = LayerMask.NameToLayer("Enemy");
-
-        if (enemyLayer != -1)
-        {
-            Physics2D.IgnoreLayerCollision(playerLayer, enemyLayer, true);
-        }
+        
+        IgnoreEnemyCollision(true);
 
         StartCoroutine(ShowGhosts());
 
@@ -334,13 +418,29 @@ public class Player : MonoBehaviour
         rb.gravityScale = originalGravity;
         dashing = false;
 
-        if (enemyLayer != -1)
+        // Only restore collision if we are arguably "safe" or grounded?
+        // If we dash into the air, we want to keep ignoring collision (Jump behavior).
+        // If we dash on ground, we restore it.
+        // LandingCoroutine will handle restoring it if we land later.
+
+
+        // Extended invincibility after dash
+        yield return new WaitForSeconds(0.15f);
+        if (!isHit) // Only turn off invincibility if we weren't hit (though we shouldn't be able to get hit if invincible)
         {
-            Physics2D.IgnoreLayerCollision(playerLayer, enemyLayer, false);
+             isInvincible = false;
         }
 
-        yield return new WaitForSeconds(dashCooldown);
+        yield return new WaitForSeconds(dashCooldown - 0.15f);
         canDash = true;
+    }
+
+    private void IgnoreEnemyCollision(bool ignore)
+    {
+        if (enemyLayer != -1)
+        {
+            Physics2D.IgnoreLayerCollision(gameObject.layer, enemyLayer, ignore);
+        }
     }
 
     private IEnumerator ShowGhosts()
@@ -365,17 +465,80 @@ public class Player : MonoBehaviour
 
     }
 
-
-
     public void TakeDamage(int damage)
     {
-        HP -= damage;
+        if (isInvincible) return;
 
-        if (HP <= 0)
+        HP -= damage;
+        
+        // Update health bar UI
+        if (healthBarUI != null)
         {
-            deathPanal .SetActive(true);
-            Debug.Log("Player Dead");
-            Time.timeScale = 0f;
+            healthBarUI.UpdateHealth(HP);
         }
+
+        if (HP <= 0 && !isDead)
+        {
+            isDead = true;
+            if (deathSequenceController != null)
+            {
+                deathSequenceController.StartDeathSequence();
+            }
+            else
+            {
+                // Fallback
+                if (deathPanel != null) deathPanel.SetActive(true);
+                Time.timeScale = 0f;
+            }
+            Debug.Log("Player Dead");
+        }
+
+        if (camFollow != null) camFollow.TriggerShake(shakeDuration, shakeMagnitude);
+        StartCoroutine(HitStop());
+        StartCoroutine(HitRoutine());
+    }
+
+    private IEnumerator HitStop()
+    {
+        Time.timeScale = 0f;
+        yield return new WaitForSecondsRealtime(hitStopDuration);
+        Time.timeScale = 1f;
+    }
+
+    private IEnumerator HitRoutine()
+    {
+        isHit = true;
+        isInvincible = true;
+        
+        // Ignore enemy collision during invincibility
+        IgnoreEnemyCollision(true);
+        
+        rb.linearVelocity = Vector2.zero;
+        rb.AddForce(Vector2.up * knockbackForceY, ForceMode2D.Impulse);
+        
+        spriteRenderer.color = Color.red;
+
+        yield return new WaitForSeconds(hitStunTime);
+
+        isHit = false;
+        anim.SetBool("IsTakeDamage", false);
+        spriteRenderer.color = originalColor; // Revert to original color (or white) before flickering
+
+        // Invincibility Flicker
+        float flashDelay = 0.1f;
+        float timer = 0f;
+        
+        while (timer < invincibilityTime)
+        {
+            spriteRenderer.enabled = !spriteRenderer.enabled;
+            yield return new WaitForSeconds(flashDelay);
+            timer += flashDelay;
+        }
+
+        spriteRenderer.enabled = true;
+        isInvincible = false;
+        
+        // Restore enemy collision when invincibility ends
+        IgnoreEnemyCollision(false);
     }
 }

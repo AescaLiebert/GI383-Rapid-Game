@@ -16,6 +16,8 @@ public class CameraFollow : MonoBehaviour
     public Vector2 maxPosition;
 
     private Camera cam;
+    private float shakeTimer;
+    private float shakeMagnitude;
 
     void Start()
     {
@@ -71,7 +73,21 @@ public class CameraFollow : MonoBehaviour
 
         // Smoothly interpolate towards the desired position
         Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
+
+        if (shakeTimer > 0)
+        {
+            Vector3 shakeOffset = Random.insideUnitCircle * shakeMagnitude;
+            smoothedPosition += shakeOffset;
+            shakeTimer -= Time.unscaledDeltaTime;
+        }
+
         transform.position = smoothedPosition;
+    }
+
+    public void TriggerShake(float duration, float magnitude)
+    {
+        shakeTimer = duration;
+        shakeMagnitude = magnitude;
     }
 
     void FindPlayer()
