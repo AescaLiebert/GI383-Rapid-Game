@@ -52,6 +52,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Shoot",
+                    "type": "Button",
+                    "id": "b96d9938-bc18-4736-8483-c2f3a9277a3f",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Interact",
                     "type": "Button",
                     "id": "852140f2-7766-474d-8707-702459ba45f3",
@@ -491,6 +500,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Dash",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9b993e53-90a1-459a-b990-6c22a9038960",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Shoot",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

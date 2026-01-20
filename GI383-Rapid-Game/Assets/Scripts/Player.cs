@@ -7,6 +7,8 @@ public class Player : MonoBehaviour
     [Header("Player Stats")]
     public int HP;
     public int level;
+
+    public GameObject deathPanal;
     [Header("Movement Stats")]
     public float jump;
     public float speed;
@@ -15,7 +17,7 @@ public class Player : MonoBehaviour
     private string weaponName;
     [SerializeField] private Transform atttackpoit;
     public Weapon currentWeapon;
-
+    public Weapon knifeWeapon;
     [Header("Dash Stats")]
     public float dashspeed;
     public float dashCooldown;
@@ -33,10 +35,11 @@ public class Player : MonoBehaviour
     private bool isJumpStarting;
     private bool isLanding;
     private bool isAttacking;
+    private bool isShooting;
     private bool wasGrounded;
 
     // Action Buffer
-    public enum BufferedAction { None, Jump, Dash, Attack }
+    public enum BufferedAction { None, Jump, Dash, Attack , Shoot}
     private BufferedAction bufferedAction = BufferedAction.None;
     private float actionBufferTimer;
 
@@ -93,7 +96,7 @@ public class Player : MonoBehaviour
 
         // Movement Logic
         // Lock Direction Change if Dashing OR JumpStarting OR Landing OR Attacking
-        bool isMovementLocked = dashing || isJumpStarting || isLanding || isAttacking;
+        bool isMovementLocked = dashing || isJumpStarting || isLanding || isAttacking || isShooting;
 
         if (!isMovementLocked && moveInput.x != 0)
         {
@@ -101,6 +104,10 @@ public class Player : MonoBehaviour
             if (currentWeapon != null)
             {
                 currentWeapon.Turn(moveInput.x > 0);
+            }
+            if (knifeWeapon != null)
+            {
+                knifeWeapon.Turn(moveInput.x > 0);
             }
         }
 
@@ -165,6 +172,14 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void OnShoot(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            AttemptAction(BufferedAction.Shoot);
+        }
+    }
+
     // --- Action Buffer System ---
 
     private void AttemptAction(BufferedAction action)
@@ -197,7 +212,10 @@ public class Player : MonoBehaviour
             case BufferedAction.Attack:
                 // Cannot attack if dashing, jumping start, landing, or ALREADY attacking
                 return currentWeapon != null && !dashing && !isJumpStarting && !isLanding && !isAttacking;
-
+           
+            case BufferedAction.Shoot: // [NEW] ปืน
+                // ยิงได้ถ้ามีปืน และไม่ได้กำลังทำอย่างอื่น (รวมถึงไม่ได้ฟันดาบอยู่)
+                return knifeWeapon != null && !dashing && !isJumpStarting && !isLanding && !isAttacking && !isShooting;
             default:
                 return false;
         }
@@ -216,6 +234,9 @@ public class Player : MonoBehaviour
             case BufferedAction.Attack:
                 StartCoroutine(AttackCoroutine());
                 break;
+            case BufferedAction.Shoot: 
+                StartCoroutine(ShootCoroutine());
+                break;
         }
     }
 
@@ -226,7 +247,7 @@ public class Player : MonoBehaviour
         if (dashing) return;
 
         // Disable movement if JumpStarting or Landing or Attacking
-        if (isJumpStarting || isLanding || isAttacking)
+        if (isJumpStarting || isLanding || isAttacking || isShooting)
         {
             rb.linearVelocity = new Vector2(0, rb.linearVelocity.y); // Stop X movement, keep Y (gravity)
             return;
@@ -274,6 +295,14 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(currentWeapon.attackDuration);
 
         isAttacking = false;
+    }
+
+    private IEnumerator ShootCoroutine()
+    {
+        isShooting = true;
+        knifeWeapon.Attack();
+        yield return new WaitForSeconds(knifeWeapon.attackDuration);
+        isShooting = false;
     }
 
     private IEnumerator Dash()
@@ -344,7 +373,9 @@ public class Player : MonoBehaviour
 
         if (HP <= 0)
         {
+            deathPanal .SetActive(true);
             Debug.Log("Player Dead");
+            Time.timeScale = 0f;
         }
     }
 }
