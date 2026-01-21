@@ -131,7 +131,7 @@ Transform:
   m_GameObject: {fileID: 7234240371709086105}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.26, z: -10}
+  m_LocalPosition: {x: 0, y: 1.5, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -253,7 +253,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraFollow
   target: {fileID: 2444777215796051656}
-  offset: {x: 0, y: 0, z: -10}
+  offset: {x: 0, y: 1.5, z: -10}
   smoothSpeed: 1
   enableBounds: 1
   minPosition: {x: -39.5, y: -5}
@@ -520,7 +520,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HP: 10
   level: 0
-  jump: 15
+  healthBarUI: {fileID: 0}
+  jump: 12
   speed: 8
   atttackpoit: {fileID: 926302801658061068}
   currentWeapon: {fileID: 2906556909002122561}
@@ -539,6 +540,7 @@ MonoBehaviour:
   landingLagTime: 0.1
   bufferWindow: 0.3
   deathPanel: {fileID: 0}
+  deathSequenceController: {fileID: 0}
   anim: {fileID: 2394366822511294326}
   spriteRenderer: {fileID: 8307042286228816184}
   rb: {fileID: 8591976508056306242}

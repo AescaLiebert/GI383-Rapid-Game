@@ -429,6 +429,12 @@ public class Player : MonoBehaviour
         if (!isHit) // Only turn off invincibility if we weren't hit (though we shouldn't be able to get hit if invincible)
         {
              isInvincible = false;
+             
+             // Restore collision if on ground
+             if (IsGrounded())
+             {
+                 IgnoreEnemyCollision(false);
+             }
         }
 
         yield return new WaitForSeconds(dashCooldown - 0.15f);
