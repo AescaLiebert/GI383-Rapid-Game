@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 9073569619258442943}
   - component: {fileID: 8249747323291832601}
   - component: {fileID: 6960755422001756797}
+  - component: {fileID: 2879765559265199567}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -85,3 +86,19 @@ MonoBehaviour:
     waveDuration: 30
     waveSpecificPrefabs: []
   timeBetweenWaves: 5
+--- !u!114 &2879765559265199567
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6247218555367941384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6476eb63857cf440b2313c6c2c10c7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  player: {fileID: 0}
+  healthBarUI: {fileID: 0}
+  deathSequenceController: {fileID: 0}
+  deathPanel: {fileID: 0}

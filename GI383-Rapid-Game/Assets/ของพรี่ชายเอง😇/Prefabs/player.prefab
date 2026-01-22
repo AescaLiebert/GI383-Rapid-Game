@@ -49,59 +49,6 @@ MonoBehaviour:
   attackDuration: 0.2
   bulletPrefab: {fileID: 2360545146390537314, guid: 37dd444fa5056c24ca90b8df85e7ba13, type: 3}
   firePoint: {fileID: 926302801658061068}
---- !u!1 &5155562940040348022
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5090054729884593728}
-  - component: {fileID: 2906556909002122561}
-  m_Layer: 7
-  m_Name: Sword
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5090054729884593728
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5155562940040348022}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2, y: -0.2, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2444777215796051656}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2906556909002122561
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5155562940040348022}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ff9c5e8e950bc74a8c755a23fc192e6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 3
-  cooldownTime: 0.1
-  attackDuration: 0.2
-  attackPoint: {fileID: 926302801658061068}
-  attackArea: {x: 2.87, y: 1.7}
-  enemyLayers:
-    serializedVersion: 2
-    m_Bits: 64
-  swordPrefab: {fileID: 5695522070656283032, guid: 1ca275388e50b044781a09cc1cc0c486, type: 3}
 --- !u!1 &7234240371709086105
 GameObject:
   m_ObjectHideFlags: 0
@@ -268,7 +215,7 @@ GameObject:
   m_Component:
   - component: {fileID: 926302801658061068}
   m_Layer: 7
-  m_Name: Attack
+  m_Name: AttackPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -283,7 +230,7 @@ Transform:
   m_GameObject: {fileID: 8495324065478662333}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.47, y: -0.06, z: 0}
+  m_LocalPosition: {x: 1.47, y: -0.06, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -304,6 +251,12 @@ GameObject:
   - component: {fileID: 5181253907125543192}
   - component: {fileID: 2394366822511294326}
   - component: {fileID: 5885729883357656711}
+  - component: {fileID: 8675285309079451010}
+  - component: {fileID: 7371803606534911055}
+  - component: {fileID: 4375947690217761027}
+  - component: {fileID: 3629568143014535837}
+  - component: {fileID: 976444840619344605}
+  - component: {fileID: 4082206599513055322}
   m_Layer: 7
   m_Name: player
   m_TagString: Untagged
@@ -327,7 +280,6 @@ Transform:
   - {fileID: 4780734706369720512}
   - {fileID: 1295893265555429504}
   - {fileID: 926302801658061068}
-  - {fileID: 5090054729884593728}
   - {fileID: 8470793239955635061}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -518,36 +470,131 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f836e086c3e42b2459c7a1e34d5067d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 10
-  level: 0
-  healthBarUI: {fileID: 0}
-  jump: 12
-  speed: 8
-  atttackpoit: {fileID: 926302801658061068}
-  currentWeapon: {fileID: 2906556909002122561}
-  knifeWeapon: {fileID: 4452035781579981097}
-  dashspeed: 30
-  dashCooldown: 1
-  dashTime: 0.08
-  dashing: 0
-  knockbackForceY: 5
+  stats: {fileID: 8675285309079451010}
+  movement: {fileID: 7371803606534911055}
+  inputHandler: {fileID: 4375947690217761027}
+  animHandler: {fileID: 3629568143014535837}
+  combat: {fileID: 976444840619344605}
+  skillManager: {fileID: 4082206599513055322}
+  camFollow: {fileID: 2261282325423674705}
+  knockUpForce: 5
+--- !u!114 &8675285309079451010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8513892293871985472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c71429b9dc7364458be0c29d73533b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
+  playerData: {fileID: 11400000, guid: 8dd4f2c686b57f4468b469f4cc51e779, type: 2}
+  currentHP: 0
+  currentXP: 0
+  currentLevel: 1
+  maxHP: 0
+  attackDamage: 0
   hitStunTime: 0.2
-  invincibilityTime: 1.5
-  hitStopDuration: 0.1
-  shakeDuration: 0.2
-  shakeMagnitude: 0.4
+--- !u!114 &7371803606534911055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8513892293871985472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2f98e3ab1bda184a978d9f56e4c1d29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
+  stats: {fileID: 8675285309079451010}
+  spriteRenderer: {fileID: 8307042286228816184}
+  speed: 5
+  jumpForce: 10
+  dashSpeed: 30
+  dashDuration: 0.2
+  dashCooldown: 1
   jumpStartupTime: 0.05
   landingLagTime: 0.1
-  bufferWindow: 0.3
-  deathPanel: {fileID: 0}
-  deathSequenceController: {fileID: 0}
-  anim: {fileID: 2394366822511294326}
-  spriteRenderer: {fileID: 8307042286228816184}
-  rb: {fileID: 8591976508056306242}
   groundCheck: {fileID: 4780734706369720512}
   groundLayer:
     serializedVersion: 2
-    m_Bits: 72
+    m_Bits: 8
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 64
+--- !u!114 &4375947690217761027
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8513892293871985472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5cd6001f0d47cc34880bd50cfa8b0575, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInputHandler
+  movement: {fileID: 7371803606534911055}
+  combat: {fileID: 976444840619344605}
+--- !u!114 &3629568143014535837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8513892293871985472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9919d9e7482610343ae8ba9ec54890d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimationHandler
+  anim: {fileID: 2394366822511294326}
+  movement: {fileID: 7371803606534911055}
+  combat: {fileID: 976444840619344605}
+  stats: {fileID: 8675285309079451010}
+  spriteRenderer: {fileID: 8307042286228816184}
+--- !u!114 &976444840619344605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8513892293871985472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e58727c3a269a1429051000667e22fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCombat
+  attackPoint: {fileID: 926302801658061068}
+  attackArea: {x: 2.87, y: 1.7}
+  enemyLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  attackEffectPrefab: {fileID: 5695522070656283032, guid: 1ca275388e50b044781a09cc1cc0c486, type: 3}
+  attackCooldown: 0.5
+  knockbackForceX: 3
+  knockbackForceY: 5
+  stunDuration: 0.2
+  attackDuration: 0.2
+  knifeWeapon: {fileID: 4452035781579981097}
+  stats: {fileID: 8675285309079451010}
+--- !u!114 &4082206599513055322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8513892293871985472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8a4aaa3dd7042041a0fcacc648c4801, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SkillManager
+  stats: {fileID: 8675285309079451010}
+  unlockedSkills: []
 --- !u!1 &9135853940479833697
 GameObject:
   m_ObjectHideFlags: 0

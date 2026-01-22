@@ -192,7 +192,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.057819486, y: 0.0750469}
+  m_Offset: {x: -0.09, y: 0.0750469}
   m_Size: {x: 0.9490197, y: 2.4259708}
   m_Direction: 0
 --- !u!50 &1433725132842515138
@@ -210,7 +210,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 0
+  m_GravityScale: 4
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -236,16 +236,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   moveSpeed: 3
   hp: 10
+  detectionRange: 25
+  giveUpRange: 30
+  currentState: 0
   groundCheck: {fileID: 5034234761203153753}
   groundLayer:
     serializedVersion: 2
-    m_Bits: 72
-  knockbackForce: 5
+    m_Bits: 8
+  knockbackForce: 1
   knockbackDuration: 0.2
   attackRange: 2.14
   attackCooldown: 1.5
   attackDelay: 0.5
   damage: 1
   attackPoint: {fileID: 241974018674737415}
-  attackArea: {x: 2, y: 2.16}
+  attackArea: {x: 1.7, y: 2.16}
   slash: {fileID: 7461607183011662884, guid: d74bb0a32e99661408211ffd2c0f76d3, type: 3}
+  xpDropPrefab: {fileID: 0}
+  healthDropPrefab: {fileID: 0}
+  minXP: 10
+  maxXP: 20

@@ -25,28 +25,32 @@ public class HealthBarUI : MonoBehaviour
 
     private void Start()
     {
-        // Get max HP from Player
-        if (player != null)
-        {
-            maxHP = player.HP;
-        }
-        else
-        {
-            Debug.LogError("HealthBarUI: Player reference is not assigned! Cannot determine max HP.");
-            maxHP = 10; // Fallback default
-        }
-
-        // Validate setup
+        // Optional safe check, but initialization can now come from GameManager
         if (heartImages == null || heartImages.Length != 5)
         {
             Debug.LogError("HealthBarUI: heartImages array must contain exactly 5 Image components!");
-            return;
         }
 
         if (fullHeartSprite == null || halfHeartSprite == null || emptyHeartSprite == null)
         {
             Debug.LogWarning("HealthBarUI: One or more heart sprites are not assigned. Please assign them in the Inspector.");
         }
+        
+        // If Player is assigned in Inspector to this UI (old way), we can still use it for maxHP fallback
+        if (player != null)
+        {
+             // Backward compat: if player referenced directly
+             maxHP = player.HP; 
+        }
+        else
+        {
+            maxHP = 10; // Default until initialized by GameManager
+        }
+    }
+    
+    public void Initialize(int maxHealth)
+    {
+        this.maxHP = maxHealth;
     }
 
     /// <summary>
