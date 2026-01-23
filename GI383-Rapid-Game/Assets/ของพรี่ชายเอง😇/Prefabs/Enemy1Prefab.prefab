@@ -236,8 +236,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   moveSpeed: 3
   hp: 10
-  detectionRange: 25
-  giveUpRange: 30
+  detectionRange: 20
+  giveUpRange: 22
   currentState: 0
   groundCheck: {fileID: 5034234761203153753}
   groundLayer:
@@ -252,7 +252,6 @@ MonoBehaviour:
   attackPoint: {fileID: 241974018674737415}
   attackArea: {x: 1.7, y: 2.16}
   slash: {fileID: 7461607183011662884, guid: d74bb0a32e99661408211ffd2c0f76d3, type: 3}
-  xpDropPrefab: {fileID: 0}
-  healthDropPrefab: {fileID: 0}
+  itemDropPrefab: {fileID: 1595820753878120275, guid: 3e98a5121867aa44ca355613c2b3cb1e, type: 3}
   minXP: 10
   maxXP: 20

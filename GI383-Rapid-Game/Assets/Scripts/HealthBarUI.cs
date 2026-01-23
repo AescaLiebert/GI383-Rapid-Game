@@ -1,8 +1,15 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class HealthBarUI : MonoBehaviour
 {
+    [Header("Heart Assets")]
+    [Tooltip("Prefab for the heart UI element (must have Image component)")]
+    public GameObject heartPrefab;
+    [Tooltip("Container for heart instances (Horizontal Layout Group). Defaults to this object if null.")]
+    public Transform heartContainer;
+
     [Header("Heart Sprites")]
     [Tooltip("Sprite for a full heart (2 HP)")]
     public Sprite fullHeartSprite;
@@ -14,119 +21,256 @@ public class HealthBarUI : MonoBehaviour
     public Sprite emptyHeartSprite;
 
     [Header("Heart UI Elements")]
-    [Tooltip("Array of 5 heart Image components in the UI")]
-    public Image[] heartImages;
+    [Tooltip("List of instantiated hearts. Index 0 is the Highest HP heart (Rightmost).")]
+    public List<Image> heartImages = new List<Image>();
 
     [Header("Player Reference")]
-    [Tooltip("Reference to the Player component to get max HP")]
+    [Tooltip("Reference to the Player component")]
     public Player player;
 
-    private int maxHP; // Cached max HP from Player
+    private int maxHP; // Cached max HP
+    private Vector2 defaultCellSize; // Stores the initial cell size logic
+
 
     private void Start()
     {
-        // Optional safe check, but initialization can now come from GameManager
-        if (heartImages == null || heartImages.Length != 5)
+        if (heartContainer == null) heartContainer = transform;
+        
+        // Capture default cell size
+        GridLayoutGroup grid = heartContainer.GetComponent<GridLayoutGroup>();
+        if (grid != null)
         {
-            Debug.LogError("HealthBarUI: heartImages array must contain exactly 5 Image components!");
+            defaultCellSize = grid.cellSize;
+            // Apply requested constraint
+            grid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+            grid.constraintCount = 7;
         }
 
         if (fullHeartSprite == null || halfHeartSprite == null || emptyHeartSprite == null)
         {
-            Debug.LogWarning("HealthBarUI: One or more heart sprites are not assigned. Please assign them in the Inspector.");
+            Debug.LogWarning("HealthBarUI: One or more heart sprites are not assigned.");
         }
         
-        // If Player is assigned in Inspector to this UI (old way), we can still use it for maxHP fallback
-        if (player != null)
+        // Delay initialization to ensure PlayerStats and Layout are ready
+        StartCoroutine(InitializeRoutine());
+    }
+
+    private System.Collections.IEnumerator InitializeRoutine()
+    {
+        // Wait for end of frame to ensure Layout is built (for RectTransform dimensions)
+        yield return new WaitForEndOfFrame();
+
+        if (player == null) player = FindFirstObjectByType<Player>();
+
+        // Wait until PlayerStats is valid and initialized
+        while (player == null || player.stats == null || player.stats.maxHP <= 0)
         {
-             // Backward compat: if player referenced directly
-             maxHP = player.HP; 
+             if (player == null) player = FindFirstObjectByType<Player>();
+             yield return null; 
+        }
+
+        if (player != null && player.stats != null)
+        {
+            // Subscribe to events
+            player.stats.OnHealthChanged += UpdateHealth;
+            player.stats.OnLevelUp += HandleLevelUp;
+
+            // Initial Setup
+            UpdateMaxHP(player.stats.maxHP);
+            UpdateHealth(player.stats.currentHP);
         }
         else
         {
-            maxHP = 10; // Default until initialized by GameManager
+            // Fallback
+            maxHP = 10;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (player != null && player.stats != null)
+        {
+            player.stats.OnHealthChanged -= UpdateHealth;
+            player.stats.OnLevelUp -= HandleLevelUp;
+        }
+    }
+
+    private void HandleLevelUp(int level)
+    {
+        // When level increases, stats are recalculated, so we update MaxHP and refresh UI
+        if (player != null && player.stats != null)
+        {
+            UpdateMaxHP(player.stats.maxHP);
+            UpdateHealth(player.stats.currentHP);
+        }
+    }
+
+    public void Initialize(int maxHealth)
+    {
+        UpdateMaxHP(maxHealth);
+    }
+    
+    public void UpdateMaxHP(int newMaxHP)
+    {
+        this.maxHP = newMaxHP;
+        
+        // Calculate needed hearts (2 HP per heart)
+        // User requested "suppose to be 2 to Instantiate not 1".
+        // Interpreted as: Only instantiate for full 2 HP chunks. Integer division.
+        int requiredHearts = maxHP / 2;
+        
+        if (heartPrefab == null)
+        {
+            // If no prefab, we can't instantiate. Rely on existing inspector-assigned hearts.
+            return;
+        }
+
+        // Adjust heart count
+        int currentCount = heartImages.Count;
+        int diff = requiredHearts - currentCount;
+
+        if (diff > 0)
+        {
+            for (int i = 0; i < diff; i++)
+            {
+                CreateHeart();
+            }
+        }
+        else if (diff < 0)
+        {
+            for (int i = 0; i < Mathf.Abs(diff); i++)
+            {
+                RemoveHeart();
+            }
+        }
+
+        ResizeHeartsToFit(requiredHearts);
+        
+        // Ensure accurate initial state
+        if (player != null && player.stats != null)
+        {
+            UpdateHealth(player.stats.currentHP);
+        }
+    }
+
+    private void ResizeHeartsToFit(int heartCount)
+    {
+        if (heartContainer == null) return;
+        
+        GridLayoutGroup grid = heartContainer.GetComponent<GridLayoutGroup>();
+        RectTransform containerRect = heartContainer.GetComponent<RectTransform>();
+        
+        if (grid != null && containerRect != null)
+        {
+            // We assume horizontal loading for a health bar
+            float containerWidth = containerRect.rect.width;
+            
+            // Safety check: if width is 0 (e.g. layout not built), use a default or skip
+            if (containerWidth <= 0)
+            {
+               // Try to fallback to parent or just return to avoid 0 size
+               return; 
+            }
+
+            float spacingX = grid.spacing.x;
+            float paddingLeft = grid.padding.left;
+            float paddingRight = grid.padding.right;
+            
+            float availableWidth = containerWidth - paddingLeft - paddingRight;
+            
+            // Equation: (width * count) + (spacing * (count - 1)) = available
+            
+            // With fixed columns (7), we want to fit up to 7 items in the width.
+            // If heartCount < 7, fit heartCount. If >= 7, fit 7.
+            int columns = Mathf.Min(heartCount, 7);
+            if (columns < 1) columns = 1;
+
+            float totalSpacing = spacingX * Mathf.Max(0, columns - 1);
+            float maxCellWidth = (availableWidth - totalSpacing) / columns;
+            
+            // Determine new size
+            // We want to shrink if needed, but not grow larger than default
+            // Also ensure we don't go below a minimum decent size (e.g. 1) to avoid invisible hearts
+            if (maxCellWidth < 1) maxCellWidth = 10; // Fallback min size
+            
+            float newSizeX = Mathf.Min(defaultCellSize.x, maxCellWidth);
+            float newSizeY = newSizeX; // Assume square ratio or maintain ratio
+            
+            // If default was not square, we should maintain aspect ratio
+            if (defaultCellSize.x > 0)
+            {
+                float ratio = defaultCellSize.y / defaultCellSize.x;
+                newSizeY = newSizeX * ratio;
+            }
+
+            grid.cellSize = new Vector2(newSizeX, newSizeY);
+        }
+    }
+
+    private void CreateHeart()
+    {
+        if (heartPrefab == null || heartContainer == null) return;
+
+        GameObject newHeart = Instantiate(heartPrefab, heartContainer);
+        Image heartImg = newHeart.GetComponent<Image>();
+        if (heartImg != null)
+        {
+            // We insert at 0 because our logic uses Index 0 as the "Highest HP" heart.
+            // Visually: The new heart is appended to the container (Rightmost).
+            // Logic: Index 0 (High HP) -> Child N (Rightmost).
+            // So the New Heart (which is High HP) should be at Index 0.
+            heartImages.Insert(0, heartImg);
+            
+            // Set default sprite
+            heartImg.sprite = emptyHeartSprite;
         }
     }
     
-    public void Initialize(int maxHealth)
+    private void RemoveHeart()
     {
-        this.maxHP = maxHealth;
+        if (heartImages.Count > 0)
+        {
+            // Remove High HP heart (Index 0 is Highest HP / Rightmost)
+            // This happens if MaxHP decreases.
+            Image heartToRemove = heartImages[0];
+            heartImages.RemoveAt(0);
+            Destroy(heartToRemove.gameObject);
+        }
     }
 
     /// <summary>
     /// Updates the health bar display based on current HP
     /// </summary>
-    /// <param name="currentHP">Current player HP (0-10)</param>
     public void UpdateHealth(int currentHP)
     {
-        // Clamp HP to valid range
-        currentHP = Mathf.Clamp(currentHP, 0, maxHP);
+        // Use effective MaxHP based on instantiated hearts to align ranges correctly
+        // If real MaxHP is 11, we have 5 hearts (Effective 10).
+        // If we used 11, Heart 0 would be range 10-11. 10 HP would show as Half.
+        // We want 10 HP to show as Full. So use Effective Max 10.
+        int effectiveMaxHP = heartImages.Count * 2;
+        
+        // Clamp currentHP to effective Max for display purposes
+        // (If player has 11 HP, treat as 10)
+        int displayHP = Mathf.Clamp(currentHP, 0, effectiveMaxHP);
 
-        // Each heart represents 2 HP
-        // We need to determine the state of each of the 5 hearts
-        for (int i = 0; i < heartImages.Length; i++)
+        for (int i = 0; i < heartImages.Count; i++)
         {
-            // Calculate the HP range this heart represents
-            // Heart 0: HP 10-9 (index 0 represents rightmost/highest HP)
-            // Heart 1: HP 8-7
-            // Heart 2: HP 6-5
-            // Heart 3: HP 4-3
-            // Heart 4: HP 2-1
-            
-            int heartIndex = i;
-            int minHPForThisHeart = maxHP - (heartIndex * 2) - 2; // Minimum HP for this heart to show anything
-            int maxHPForThisHeart = maxHP - (heartIndex * 2);     // Maximum HP this heart represents
+            // Heart 0: Represents the 'Top' of the HP bar (Highest values)
+            int heartIndex = i; 
+            int maxHPForThisHeart = effectiveMaxHP - (heartIndex * 2);
 
-            if (currentHP >= maxHPForThisHeart)
+            if (displayHP >= maxHPForThisHeart)
             {
-                // Full heart: currentHP is at or above the max for this heart
                 heartImages[i].sprite = fullHeartSprite;
             }
-            else if (currentHP == maxHPForThisHeart - 1)
+            else if (displayHP == maxHPForThisHeart - 1 && displayHP > 0)
             {
-                // Half heart: currentHP is exactly 1 less than max for this heart
                 heartImages[i].sprite = halfHeartSprite;
             }
             else
             {
-                // Empty heart: currentHP is below this heart's range
                 heartImages[i].sprite = emptyHeartSprite;
             }
-        }
-    }
-
-    /// <summary>
-    /// Alternative method with detailed logging for debugging
-    /// </summary>
-    public void UpdateHealthWithDebug(int currentHP)
-    {
-        currentHP = Mathf.Clamp(currentHP, 0, maxHP);
-        Debug.Log($"HealthBarUI: Updating health display for {currentHP} HP");
-
-        for (int i = 0; i < heartImages.Length; i++)
-        {
-            int heartIndex = i;
-            int minHPForThisHeart = maxHP - (heartIndex * 2) - 2;
-            int maxHPForThisHeart = maxHP - (heartIndex * 2);
-
-            string heartState = "";
-            if (currentHP >= maxHPForThisHeart)
-            {
-                heartImages[i].sprite = fullHeartSprite;
-                heartState = "FULL";
-            }
-            else if (currentHP == maxHPForThisHeart - 1)
-            {
-                heartImages[i].sprite = halfHeartSprite;
-                heartState = "HALF";
-            }
-            else
-            {
-                heartImages[i].sprite = emptyHeartSprite;
-                heartState = "EMPTY";
-            }
-
-            Debug.Log($"  Heart {i}: Range [{minHPForThisHeart + 1}-{maxHPForThisHeart}] HP -> {heartState}");
         }
     }
 }

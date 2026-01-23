@@ -4,12 +4,19 @@ using System.Collections;
 public class WaveManager : MonoBehaviour
 {
     public EnemySpawner spawner;
+    public WaveUI waveUI;
 
     [Header("Wave Configuration (ตั้งค่าพื้นฐาน)")]
     [Tooltip("ระยะเวลาพักระหว่าง Wave (วินาที)")]
     public float timeBetweenWaves = 5f;
     [Tooltip("ระยะห่างระหว่างการเกิดของศัตรูแต่ละตัวใน Wave เดียวกัน")]
     public float spawnInterval = 0.5f;
+
+    [Header("Time Limit Settings")]
+    [Tooltip("เวลาเริ่มต้นสำหรับ Wave 1")]
+    public float baseWaveTime = 30f;
+    [Tooltip("เวลาที่เพิ่มขึ้นในแต่ละ Wave")]
+    public float waveTimeIncrement = 5f;
 
     [Header("Endless Difficulty Settings (การเพิ่มความยาก)")]
     [Tooltip("จำนวนศัตรูเริ่มต้นใน Wave 1")]
@@ -24,6 +31,7 @@ public class WaveManager : MonoBehaviour
     public float speedIncreasePercentage = 0.05f;
 
     private int currentWave = 0;
+    public int CurrentWave => currentWave;
 
     void Start()
     {
@@ -32,6 +40,10 @@ public class WaveManager : MonoBehaviour
             spawner = FindFirstObjectByType<EnemySpawner>();
         }
 
+        if (waveUI == null)
+        {
+            waveUI = FindFirstObjectByType<WaveUI>();
+        }
         
         StartCoroutine(StartNextWave());
     }
@@ -41,20 +53,26 @@ public class WaveManager : MonoBehaviour
         currentWave++;
         Debug.Log($"--- Starting Wave {currentWave} ---");
 
-        //คำนวณจำนวนศัตรูในรอบนี้
-        
+        if (waveUI != null)
+        {
+            waveUI.HideCenterText();
+        }
+
+        // Calculate enemies for this round
         int enemiesToSpawn = baseEnemyCount + ((currentWave - 1) * enemyCountIncrement);
 
-        // คำนวณค่าพลังที่เพิ่มขึ้น
+        // Calculate stat multipliers
         float currentHpMultiplier = 1f + ((currentWave - 1) * hpIncreasePercentage);
         float currentSpeedMultiplier = 1f + ((currentWave - 1) * speedIncreasePercentage);
 
-        // เริ่มเสกศัตรูทีละตัว
+        // Calculate time limit for this round
+        float currentWaveTime = baseWaveTime + ((currentWave - 1) * waveTimeIncrement);
+
+        // Spawn enemies
         for (int i = 0; i < enemiesToSpawn; i++)
         {
             if (spawner != null)
             {
-                
                 GameObject enemyObj = spawner.SpawnEnemy();
 
                 if (enemyObj != null)
@@ -62,28 +80,68 @@ public class WaveManager : MonoBehaviour
                     Enemy enemyScript = enemyObj.GetComponent<Enemy>();
                     if (enemyScript != null)
                     {
-                        
-                        // เพิ่ม HP (ปัดเศษเป็น int)
-                        enemyScript.hp = Mathf.RoundToInt(enemyScript.hp * currentHpMultiplier);
-
-                        // เพิ่ม Speed
+                        enemyScript.hp *= currentHpMultiplier;
                         enemyScript.moveSpeed *= currentSpeedMultiplier;
                     }
                 }
             }
-            // รอแป๊บนึงก่อนเสกตัวถัดไป 
             yield return new WaitForSeconds(spawnInterval);
         }
 
-        //  รอจนกว่าศัตรูทั้งหมดจะตาย (Endless Condition)
-        yield return new WaitUntil(() => GameObject.FindObjectsByType<Enemy>(FindObjectsSortMode.None).Length == 0);
+        // Wait Loop: Ends if Time runs out OR All enemies are dead
+        float timer = currentWaveTime;
+        bool allEnemiesDead = false;
 
-        Debug.Log($"Wave {currentWave} Cleared!");
+        while (timer > 0 && !allEnemiesDead)
+        {
+            timer -= Time.deltaTime;
+            
+            // Check enemies count
+            int enemyCount = GameObject.FindObjectsByType<Enemy>(FindObjectsSortMode.None).Length;
+            if (enemyCount == 0)
+            {
+                allEnemiesDead = true;
+            }
 
-        //  พักก่อนขึ้น Wave ถัดไป
+            // Update UI
+            if (waveUI != null)
+            {
+                waveUI.UpdateTimer(timer);
+
+                // Last 5 seconds countdown
+                if (timer <= 5.0f && timer > 0)
+                {
+                    // Adding 1 to ceil makes it show 5, 4, 3, 2, 1 correctly
+                    waveUI.ShowCenterText(Mathf.CeilToInt(timer).ToString());
+                }
+                else
+                {
+                   // Ensure center text is hidden if we are not in the last 5 seconds (e.g. at start of wave)
+                   // But we only want to hide it if it WAS showing a countdown. 
+                   // Simplest is to just call Hide if timer > 5.
+                   if (timer > 5.0f) 
+                   {
+                        waveUI.HideCenterText();
+                   }
+                }
+            }
+
+            yield return null;
+        }
+
+        Debug.Log($"Wave {currentWave} Cleared or Time Up!");
+
+        // Wave End Logic
+        if (waveUI != null)
+        {
+            waveUI.UpdateTimer(0);
+            waveUI.ShowCenterText("Wave Incoming");
+        }
+
+        // Wait before next wave
         yield return new WaitForSeconds(timeBetweenWaves);
 
-        // วนลูปเริ่ม Wave ถัดไป 
+        // Start next wave
         StartCoroutine(StartNextWave());
     }
 }

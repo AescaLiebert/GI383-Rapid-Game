@@ -60,12 +60,33 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
-        if (stats != null && stats.playerData != null)
+        // Subscribe to stats level up
+        if (stats != null)
         {
-            // Optional: Override with stats values if desired
-            speed = stats.playerData.baseMoveSpeed;
-            jumpForce = stats.playerData.baseJumpForce;
-            dashSpeed = stats.playerData.baseDashSpeed;
+            stats.OnLevelUp += OnLevelUp;
+            UpdateStats();
+        }
+    }
+
+    void OnDestroy()
+    {
+        if (stats != null) stats.OnLevelUp -= OnLevelUp;
+    }
+
+    private void OnLevelUp(int newLevel)
+    {
+        UpdateStats();
+    }
+
+    private void UpdateStats()
+    {
+        if (stats != null)
+        {
+            // Use current calculated stats from PlayerStats
+            // Only update if they are greater than 0 (initialized)
+            if (stats.CurrentMoveSpeed > 0) speed = stats.CurrentMoveSpeed;
+            if (stats.CurrentJumpForce > 0) jumpForce = stats.CurrentJumpForce;
+            if (stats.CurrentDashSpeed > 0) dashSpeed = stats.CurrentDashSpeed;
         }
     }
 

@@ -128,7 +128,7 @@ public class PlayerCombat : MonoBehaviour
         Collider2D[] hitEnemies = Physics2D.OverlapBoxAll(attackPoint.position, attackArea, attackPoint.eulerAngles.z, enemyLayers);
 
         // 3. Apply Damage & Knockback
-        int damage = stats != null ? stats.attackDamage : 10;
+        float damage = stats != null ? stats.attackDamage : 10f;
 
         foreach (Collider2D enemyCollider in hitEnemies)
         {

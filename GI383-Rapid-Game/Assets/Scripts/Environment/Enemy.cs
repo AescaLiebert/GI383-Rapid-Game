@@ -5,7 +5,8 @@ public class Enemy : MonoBehaviour
 {
     [Header("Stats")]
     public float moveSpeed = 3f;
-    public int hp = 10;
+
+    public float hp = 10f; // Converted High Priority to Float
 
     [Header("Detection & State")]
     public float detectionRange = 5f;
@@ -37,8 +38,7 @@ public class Enemy : MonoBehaviour
     public GameObject slash;
 
     [Header("Drops")]
-    public GameObject xpDropPrefab;
-    public GameObject healthDropPrefab;
+    public GameObject itemDropPrefab;
     public int minXP = 10;
     public int maxXP = 20;
 
@@ -51,6 +51,7 @@ public class Enemy : MonoBehaviour
     private Collider2D myCollider;
     private Coroutine knockbackCoroutine;
     private System.Collections.Generic.List<Collider2D> ignoredColliders = new System.Collections.Generic.List<Collider2D>();
+    private WaveManager waveManager;
 
 
     void Start()
@@ -70,6 +71,8 @@ public class Enemy : MonoBehaviour
             player = pObj.transform;
             playerScript = pObj.GetComponent<Player>();
         }
+
+        waveManager = FindFirstObjectByType<WaveManager>();
     }
 
     void FixedUpdate()
@@ -274,14 +277,14 @@ public class Enemy : MonoBehaviour
         return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
         // Default behavior if called without knockback (e.g. environment trap)
         // Apply zero knockback or a small default.
         TakeDamage(damage, Vector2.zero, 0.1f);
     }
 
-    public void TakeDamage(int damage, Vector2 knockbackVector, float duration)
+    public void TakeDamage(float damage, Vector2 knockbackVector, float duration)
     {
         if(hp > 0)
         {
@@ -290,6 +293,8 @@ public class Enemy : MonoBehaviour
         }
 
         hp -= damage;
+        if (FloatingTextManager.Instance != null)
+            FloatingTextManager.Instance.ShowDamage(damage, transform.position + Vector3.up * 0.5f);
         if (hp <= 0)
         {
             Die();
@@ -300,21 +305,42 @@ public class Enemy : MonoBehaviour
     {
         if (isAttackingFlag) StopAllCoroutines();
         
-        // 1. EXP Drop (100%)
-        if (xpDropPrefab != null)
+        // 1. EXP Drop (3-4 Items, 100% chance each to spawn, Splash out)
+        if (itemDropPrefab != null)
         {
-            GameObject xp = Instantiate(xpDropPrefab, transform.position, Quaternion.identity);
-            ItemPickup pickup = xp.GetComponent<ItemPickup>();
-            if (pickup != null)
+            int dropCount = Random.Range(100, 100); // 3 or 4
+            
+            int wave = (waveManager != null) ? waveManager.CurrentWave : 1;
+            // Calculus logic: Exponential Growth
+            // Formula: Base * (1.1 ^ (Wave-1))
+            float growthFactor = 1.1f;
+            float multiplier = Mathf.Pow(growthFactor, wave - 1);
+            
+            for (int i = 0; i < dropCount; i++)
             {
-                pickup.type = ItemPickup.ItemType.XP;
-                pickup.amount = Random.Range(minXP, maxXP + 1); 
-            }
-        }
+                GameObject xp = Instantiate(itemDropPrefab, transform.position, Quaternion.identity);
+                ItemPickup pickup = xp.GetComponent<ItemPickup>();
+                if (pickup != null)
+                {
+                    pickup.SetType(ItemPickup.ItemType.XP);
 
-        // 2. Health Drop (Calculated Chance)
-        if (healthDropPrefab != null)
-        {
+                    // Base calculation
+                    float baseVal = Random.Range(minXP, maxXP + 1);
+                    float scaledVal = baseVal * multiplier;
+                    
+                    // Random variation: 0.7 - 1.1
+                    float randomVar = Random.Range(0.7f, 1.1f);
+                    
+                    pickup.amount = Mathf.Max(1, Mathf.RoundToInt(scaledVal * randomVar)); // Ensure at least 1
+                    
+                    // Splash Logic
+                    Vector2 randomDir = Random.insideUnitCircle.normalized;
+                    float randomForce = Random.Range(3f, 6f);
+                    pickup.Splash(randomDir * randomForce);
+                }
+            }
+            
+            // 2. Health Drop (Calculated Chance)
             SpawnHealthDrop();
         }
 
@@ -324,26 +350,41 @@ public class Enemy : MonoBehaviour
     void SpawnHealthDrop()
     {
         if (playerScript == null || playerScript.stats == null) return;
+        if (itemDropPrefab == null) return;
 
+        // Player Health Factor
         float hpPercent = (float)playerScript.stats.currentHP / playerScript.stats.maxHP;
         float baseChance = 0.1f; // 10% base
         float lowHpBonus = (1f - hpPercent) * 0.4f; // Up to +40% if HP is 0
         
+        // Enemy Factor
         int enemyCount = FindObjectsByType<Enemy>(FindObjectsSortMode.None).Length;
         float enemyFactor = 1f / (1f + (enemyCount * 0.2f)); 
 
-        float finalChance = (baseChance + lowHpBonus) * enemyFactor;
+        // Healthkit Present on Field Factor
+        ItemPickup[] allItems = FindObjectsByType<ItemPickup>(FindObjectsSortMode.None);
+        int healthKitCount = 0;
+        foreach (var item in allItems) if (item.type == ItemPickup.ItemType.Health) healthKitCount++;
         
+        float itemFactor = 1f / (1f + (healthKitCount * 0.5f)); // Drastically reduce if kits exist
+
+        float finalChance = (baseChance + lowHpBonus) * enemyFactor * itemFactor;
+        
+        // Cap
         if (finalChance > 0.8f) finalChance = 0.8f;
 
         if (Random.value < finalChance)
         {
-            GameObject hpDrop = Instantiate(healthDropPrefab, transform.position + Vector3.up * 0.5f, Quaternion.identity);
+            GameObject hpDrop = Instantiate(itemDropPrefab, transform.position, Quaternion.identity);
             ItemPickup pickup = hpDrop.GetComponent<ItemPickup>();
             if (pickup != null)
             {
-                pickup.type = ItemPickup.ItemType.Health;
-                pickup.amount = 20; 
+                pickup.SetType(ItemPickup.ItemType.Health);
+                pickup.amount = 1; 
+                
+                // Also splash health a bit so it doesn't look static
+                Vector2 randomDir = Random.insideUnitCircle.normalized;
+                pickup.Splash(randomDir * 3f);
             }
         }
     }

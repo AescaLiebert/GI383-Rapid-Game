@@ -13,7 +13,12 @@ public class PlayerStats : MonoBehaviour
 
     [Header("Calculated Stats")]
     public int maxHP;
-    public int attackDamage;
+    public float attackDamage;
+    
+    // Movement Stats calculated from Level
+    public float CurrentMoveSpeed { get; private set; }
+    public float CurrentJumpForce { get; private set; }
+    public float CurrentDashSpeed { get; private set; }
     
     // Events
     public event Action<int> OnHealthChanged;
@@ -61,11 +66,26 @@ public class PlayerStats : MonoBehaviour
     public void InitializeStats()
     {
         // Calculate based on level
-        maxHP = playerData.baseMaxHP + ((currentLevel - 1) * playerData.hpGainPerLevel);
-        attackDamage = playerData.baseAttackDamage + ((currentLevel - 1) * playerData.attackGainPerLevel);
+        CalculateStats();
         
         currentHP = maxHP;
         UpdateHealthUI();
+    }
+
+    private void CalculateStats()
+    {
+        if (playerData == null) return;
+
+        // RPG Stats (Growth Factor)
+        maxHP = playerData.CalculateRPGStat(playerData.baseMaxHP, currentLevel);
+        attackDamage = playerData.CalculateAttackStat(playerData.baseAttackDamage, currentLevel);
+
+        // Movement Stats (Asymptotic/Limit)
+        CurrentMoveSpeed = playerData.CalculateLimitStat(playerData.baseMoveSpeed, playerData.limitMoveSpeed, currentLevel);
+        CurrentJumpForce = playerData.CalculateLimitStat(playerData.baseJumpForce, playerData.limitJumpForce, currentLevel);
+        CurrentDashSpeed = playerData.CalculateLimitStat(playerData.baseDashSpeed, playerData.limitDashSpeed, currentLevel);
+
+        Debug.Log($"Stats Calculated [Level {currentLevel}]: HP={maxHP} (Base {playerData.baseMaxHP}), Atk={attackDamage} (Base {playerData.baseAttackDamage})"); 
     }
 
     public void TakeDamage(int damage)
@@ -125,32 +145,27 @@ public class PlayerStats : MonoBehaviour
         currentLevel++;
         
         // Recalculate stats
-        maxHP += playerData.hpGainPerLevel;
-        attackDamage += playerData.attackGainPerLevel;
+        CalculateStats();
         
         // Heal on level up?
-        currentHP = maxHP;
+        //currentHP = maxHP;
         
         OnLevelUp?.Invoke(currentLevel);
         OnHealthChanged?.Invoke(currentHP);
+        
+        if (FloatingTextManager.Instance != null)
+            FloatingTextManager.Instance.ShowLevelUp(transform.position + Vector3.up);
         
         Debug.Log($"Level Up! New Level: {currentLevel}. HP: {maxHP}, Atk: {attackDamage}");
     }
 
     public int GetXPToNextLevel()
     {
-        if (playerData.levelXPRequirements == null || playerData.levelXPRequirements.Length == 0) return 999999;
-        
-        int index = currentLevel - 1;
-        if (index < playerData.levelXPRequirements.Length)
+        if (playerData != null)
         {
-            return playerData.levelXPRequirements[index];
+            return playerData.CalculateXPRequired(currentLevel);
         }
-        else
-        {
-            // Cap level or use formula for high levels
-            return playerData.levelXPRequirements[playerData.levelXPRequirements.Length - 1] + (index * 500);
-        }
+        return 999999;
     }
 
     private void Die()

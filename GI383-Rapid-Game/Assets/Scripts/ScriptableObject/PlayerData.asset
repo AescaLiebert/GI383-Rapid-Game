@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: PlayerData
   m_EditorClassIdentifier: Assembly-CSharp::PlayerDataSO
   baseMaxHP: 10
-  baseMoveSpeed: 8
-  baseJumpForce: 12
-  baseDashSpeed: 40
+  baseMoveSpeed: 5
+  baseJumpForce: 10
+  baseDashSpeed: 30
   baseAttackDamage: 3
-  levelXPRequirements: 64000000fa000000f4010000e8030000d0070000
-  hpGainPerLevel: 2
-  attackGainPerLevel: 1
+  limitMoveSpeed: 12
+  limitJumpForce: 18
+  limitDashSpeed: 80

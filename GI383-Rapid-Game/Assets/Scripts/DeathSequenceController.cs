@@ -26,6 +26,8 @@ public class DeathSequenceController : MonoBehaviour
 
     public void StartDeathSequence()
     {
+        Debug.Log("DeathSequenceController: Starting death sequence...");
+        this.gameObject.SetActive(true);
         StartCoroutine(DeathRoutine());
     }
 
