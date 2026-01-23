@@ -1,35 +1,29 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
-
-[System.Serializable]
-public class WaveData
-{
-    public string waveName;
-    public int enemyCount;
-    
-    [Header("Spawn Settings")]
-    public float minSpawnInterval = 1f;
-    public float maxSpawnInterval = 3f;
-    
-    public int minSpawnCount = 1;
-    public int maxSpawnCount = 2; // Adjust based on difficulty, prevent spawning too many at once
-
-    [Header("Win Condition")]
-    [Tooltip("If > 0, wave ends after this time. If 0, wave ends when all enemies are dead.")]
-    public float waveDuration = 0f;
-
-    public List<GameObject> waveSpecificPrefabs; 
-}
 
 public class WaveManager : MonoBehaviour
 {
     public EnemySpawner spawner;
-    public List<WaveData> waves;
-    public float timeBetweenWaves = 5f;
 
-    private int currentWaveIndex = 0;
-    private int spawnedInCurrentWave = 0;
+    [Header("Wave Configuration (ตั้งค่าพื้นฐาน)")]
+    [Tooltip("ระยะเวลาพักระหว่าง Wave (วินาที)")]
+    public float timeBetweenWaves = 5f;
+    [Tooltip("ระยะห่างระหว่างการเกิดของศัตรูแต่ละตัวใน Wave เดียวกัน")]
+    public float spawnInterval = 0.5f;
+
+    [Header("Endless Difficulty Settings (การเพิ่มความยาก)")]
+    [Tooltip("จำนวนศัตรูเริ่มต้นใน Wave 1")]
+    public int baseEnemyCount = 5;
+    [Tooltip("จำนวนศัตรูที่จะเพิ่มขึ้นในแต่ละ Wave (เช่น ใส่ 2 คือเพิ่มทีละ 2 ตัว)")]
+    public int enemyCountIncrement = 2;
+
+    [Header("Stat Multipliers (ตัวคูณความเก่ง)")]
+    [Tooltip("เปอร์เซ็นต์เลือดที่เพิ่มขึ้นต่อ Wave (เช่น 0.1 คือเพิ่ม 10%)")]
+    public float hpIncreasePercentage = 0.1f;
+    [Tooltip("เปอร์เซ็นต์ความเร็วที่เพิ่มขึ้นต่อ Wave (เช่น 0.05 คือเพิ่ม 5%)")]
+    public float speedIncreasePercentage = 0.05f;
+
+    private int currentWave = 0;
 
     void Start()
     {
@@ -37,104 +31,59 @@ public class WaveManager : MonoBehaviour
         {
             spawner = FindFirstObjectByType<EnemySpawner>();
         }
-        
-        if (spawner != null)
-        {
-            spawner.enabled = false; 
-        }
 
+        
         StartCoroutine(StartNextWave());
     }
 
     IEnumerator StartNextWave()
     {
-        if (currentWaveIndex >= waves.Count)
-        {
-            Debug.Log("All waves complete!");
-            yield break;
-        }
+        currentWave++;
+        Debug.Log($"--- Starting Wave {currentWave} ---");
 
-        Debug.Log($"Starting Wave {currentWaveIndex + 1}: {waves[currentWaveIndex].waveName}");
-        spawnedInCurrentWave = 0;
+        //คำนวณจำนวนศัตรูในรอบนี้
         
-        yield return StartCoroutine(RunWave(waves[currentWaveIndex]));
-    }
+        int enemiesToSpawn = baseEnemyCount + ((currentWave - 1) * enemyCountIncrement);
 
-    IEnumerator RunWave(WaveData wave)
-    {
-        float waveTimer = 0f;
-        bool useTimer = wave.waveDuration > 0;
+        // คำนวณค่าพลังที่เพิ่มขึ้น
+        float currentHpMultiplier = 1f + ((currentWave - 1) * hpIncreasePercentage);
+        float currentSpeedMultiplier = 1f + ((currentWave - 1) * speedIncreasePercentage);
 
-        // While loop condition:
-        // 1. We still have enemies to spawn
-        // 2. OR (if time based) time is not up
-        while (spawnedInCurrentWave < wave.enemyCount)
+        // เริ่มเสกศัตรูทีละตัว
+        for (int i = 0; i < enemiesToSpawn; i++)
         {
-            if (useTimer && waveTimer >= wave.waveDuration)
+            if (spawner != null)
             {
-                Debug.Log("Wave Time Limit Reached! Stopping spawns.");
-                break;
-            }
-
-            // Calculate random batch size
-            int batchSize = Random.Range(wave.minSpawnCount, wave.maxSpawnCount + 1);
-            int remaining = wave.enemyCount - spawnedInCurrentWave;
-            if (batchSize > remaining) batchSize = remaining;
-
-            // Spawn the batch
-            for (int i = 0; i < batchSize; i++)
-            {
-                if (spawner != null)
-                {
-                    spawner.SpawnEnemy(); 
-                }
-                spawnedInCurrentWave++;
-                yield return new WaitForSeconds(0.2f); 
-                waveTimer += 0.2f; // Increment timer during batch delay
-            }
-
-            // Wait for random interval before next batch
-            float waitTime = Random.Range(wave.minSpawnInterval, wave.maxSpawnInterval);
-            
-            // Wait while updating timer
-            float elapsed = 0f;
-            while (elapsed < waitTime)
-            {
-                elapsed += Time.deltaTime;
-                waveTimer += Time.deltaTime;
                 
-                if (useTimer && waveTimer >= wave.waveDuration) break;
+                GameObject enemyObj = spawner.SpawnEnemy();
 
-                yield return null;
+                if (enemyObj != null)
+                {
+                    Enemy enemyScript = enemyObj.GetComponent<Enemy>();
+                    if (enemyScript != null)
+                    {
+                        
+                        // เพิ่ม HP (ปัดเศษเป็น int)
+                        enemyScript.hp = Mathf.RoundToInt(enemyScript.hp * currentHpMultiplier);
+
+                        // เพิ่ม Speed
+                        enemyScript.moveSpeed *= currentSpeedMultiplier;
+                    }
+                }
             }
+            // รอแป๊บนึงก่อนเสกตัวถัดไป 
+            yield return new WaitForSeconds(spawnInterval);
         }
 
-        // Completion Condition:
-        if (useTimer)
-        {
-             // Wait until duration finishes OR all enemies dead?
-             // User asked: "Wave passed from Time Limit"
-             // usually means: survive until time is up. 
-             // If time is up, wave ends immediately (even if enemies alive? or just stop spawning?)
-             // Let's assume: Time Limit = Stop Spawning.
-             // Then usually we wait for timer to fully complete if we finished spawning early.
-             
-             while (waveTimer < wave.waveDuration)
-             {
-                 waveTimer += Time.deltaTime;
-                 yield return null;
-             }
-             Debug.Log("Wave Completed by Time Limit.");
-        }
-        else
-        {
-             // Classic Mode: Wait for all enemies to die
-             yield return new WaitUntil(() => GameObject.FindObjectsByType<Enemy>(FindObjectsSortMode.None).Length == 0);
-             Debug.Log("Wave Completed by Clearing Enemies.");
-        }
-        
-        currentWaveIndex++;
+        //  รอจนกว่าศัตรูทั้งหมดจะตาย (Endless Condition)
+        yield return new WaitUntil(() => GameObject.FindObjectsByType<Enemy>(FindObjectsSortMode.None).Length == 0);
+
+        Debug.Log($"Wave {currentWave} Cleared!");
+
+        //  พักก่อนขึ้น Wave ถัดไป
         yield return new WaitForSeconds(timeBetweenWaves);
+
+        // วนลูปเริ่ม Wave ถัดไป 
         StartCoroutine(StartNextWave());
     }
 }
