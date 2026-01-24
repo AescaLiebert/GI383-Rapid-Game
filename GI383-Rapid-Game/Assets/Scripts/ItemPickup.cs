@@ -31,9 +31,12 @@ public class ItemPickup : MonoBehaviour
     public Sprite healthSprite;
     private SpriteRenderer spriteRenderer;
 
+    private Vector3 initialScale;
+
     void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        initialScale = transform.localScale;
     }
 
     void Start()
@@ -42,8 +45,22 @@ public class ItemPickup : MonoBehaviour
         bobOffset = Random.Range(0f, 10f); // Randomize start cycle
         
         // Find player slightly cheaper than Update
-        GameObject p = GameObject.FindWithTag("Player");
-        if (p != null) playerTransform = p.transform;
+        // Find player slightly cheaper than Update
+        if (playerTransform == null)
+        {
+            GameObject p = GameObject.FindWithTag("Player");
+            if (p != null) 
+            {
+                playerTransform = p.transform;
+            }
+            else
+            {
+                // Fallback if tag is missing
+                PlayerMovement pm = FindObjectOfType<PlayerMovement>();
+                if (pm != null) playerTransform = pm.transform;
+                else Debug.LogWarning($"ItemPickup: Player not found for {gameObject.name}!");
+            }
+        }
         
         // Initialize visualization if set via inspector
         UpdateVisuals();
@@ -62,10 +79,12 @@ public class ItemPickup : MonoBehaviour
         if (type == ItemType.XP && xpSprite != null)
         {
             spriteRenderer.sprite = xpSprite;
+            transform.localScale = initialScale;
         }
         else if (type == ItemType.Health && healthSprite != null)
         {
             spriteRenderer.sprite = healthSprite;
+            transform.localScale = initialScale * 3f; // Triple size for importance
         }
     }
 
@@ -173,5 +192,12 @@ public class ItemPickup : MonoBehaviour
         }
         
         Destroy(gameObject);
+    }
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, magnetRadius);
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, collectDistance);
     }
 }

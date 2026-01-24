@@ -45,7 +45,10 @@ public class PlayerMovement : MonoBehaviour
     public event Action OnJumpStart;
     public event Action OnDashStart;
     public event Action OnDashEnd;
+
     public event Action OnLandingEnd;
+    public event Action OnLand; // New event for landing impact
+    public event Action OnRunStart; // New event for starting to run
 
     void Awake()
     {
@@ -141,7 +144,21 @@ public class PlayerMovement : MonoBehaviour
             // Let's stick to original logic:
             if (spriteRenderer != null) spriteRenderer.flipX = input.x > 0;
         }
+
+
+        // Trigger Run Event
+        bool isRunning = input.x != 0 && Mathf.Abs(rb.linearVelocity.x) > 0.1f && isGrounded;
+
+        if (isRunning && !wasRunning)
+        {
+             OnRunStart?.Invoke();
+        }
+        wasRunning = isRunning;
     }
+
+    private bool wasRunning;
+    private float lastRunTime; // Kept just in case, or remove if unused. Let's keep it clean and remove if not needed. But let's leave var if referenced elsewhere (it's private so likely safe to remove but I'll leave definitions alone to minimize diff if possible, actually wait, I defined it last time).
+    // Actually cleanliness is better. I'll replace the block to use wasRunning.
 
     public void Jump()
     {
@@ -172,6 +189,14 @@ public class PlayerMovement : MonoBehaviour
             // Landing Logic
             if (isGrounded && rb.linearVelocity.y <= 0.1f)
             {
+                StartCoroutine(LandingCoroutine());
+            }
+            OnGroundedChanged?.Invoke(isGrounded);
+            
+            // Landing Logic
+            if (isGrounded && rb.linearVelocity.y <= 0.1f)
+            {
+                OnLand?.Invoke(); // Fire Landing Event
                 StartCoroutine(LandingCoroutine());
             }
         }

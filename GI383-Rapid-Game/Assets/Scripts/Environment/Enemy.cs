@@ -42,6 +42,10 @@ public class Enemy : MonoBehaviour
     public int minXP = 10;
     public int maxXP = 20;
 
+    [Header("VFX")]
+    public ParticleSystem hitParticlePrefab;
+    public ParticleSystem deathEffectPrefab;
+
     // private bool isKnockedBack = false; // Removed in favor of State
 
     private Transform player;
@@ -71,6 +75,8 @@ public class Enemy : MonoBehaviour
             player = pObj.transform;
             playerScript = pObj.GetComponent<Player>();
         }
+
+
 
         waveManager = FindFirstObjectByType<WaveManager>();
     }
@@ -103,6 +109,12 @@ public class Enemy : MonoBehaviour
         if (currentState != EnemyState.KnockedBack && IsGrounded() && rb.linearVelocity.y > 0)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
+        }
+
+        // Check if fallen out of map
+        if (transform.position.y < -100)
+        {
+            Destroy(gameObject);
         }
     }
 
@@ -295,6 +307,26 @@ public class Enemy : MonoBehaviour
         hp -= damage;
         if (FloatingTextManager.Instance != null)
             FloatingTextManager.Instance.ShowDamage(damage, transform.position + Vector3.up * 0.5f);
+
+        // Hit VFX
+        if (hitParticlePrefab != null && myCollider != null)
+        {
+            Bounds b = myCollider.bounds;
+            float px = Random.Range(b.min.x, b.max.x);
+            // "random position should be above than -0.5 of collider" -> Use Center.y - 0.5 as min (clamped to bounds)
+            float minY = Mathf.Max(b.min.y, b.center.y - 0.5f);
+            float py = Random.Range(minY, b.max.y);
+            Vector3 spawnPos = new Vector3(px, py, transform.position.z);
+
+            ParticleSystem ps = Instantiate(hitParticlePrefab, spawnPos, Quaternion.identity);
+            
+            // Random Scale (0.8 - 1.2 approx range to cover 0.11 if it was a typo for 1.1, assuming 0.8-1.1)
+            float randomScale = Random.Range(0.8f, 1.1f); 
+            ps.transform.localScale = Vector3.one * randomScale;
+            
+            Destroy(ps.gameObject, Mathf.Max(ps.main.duration, 0.5f));
+        }
+
         if (hp <= 0)
         {
             Die();
@@ -305,10 +337,23 @@ public class Enemy : MonoBehaviour
     {
         if (isAttackingFlag) StopAllCoroutines();
         
+        // Death VFX
+        if (deathEffectPrefab != null)
+        {
+            // Ensure visualization by bringing it forward in Z (assuming Camera is at -10)
+            Vector3 spawnPos = new Vector3(transform.position.x, transform.position.y, transform.position.z - 1f);
+            ParticleSystem ps = Instantiate(deathEffectPrefab, spawnPos, Quaternion.identity);
+            
+            ps.Play(); // Force play
+            Debug.Log("Playing Death Effect");
+            
+            Destroy(ps.gameObject, Mathf.Max(ps.main.duration, 2f)); // Increased safety buffer
+        }
+        
         // 1. EXP Drop (3-4 Items, 100% chance each to spawn, Splash out)
         if (itemDropPrefab != null)
         {
-            int dropCount = Random.Range(100, 100); // 3 or 4
+            int dropCount = Random.Range(3, 5); // 3 or 4
             
             int wave = (waveManager != null) ? waveManager.CurrentWave : 1;
             // Calculus logic: Exponential Growth

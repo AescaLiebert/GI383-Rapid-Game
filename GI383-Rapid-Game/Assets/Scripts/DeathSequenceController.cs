@@ -106,6 +106,6 @@ public class DeathSequenceController : MonoBehaviour
         }
 
         Time.timeScale = 1f; // Ensure time is running again
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        SceneManager.LoadScene("MainMenu");
     }
 }

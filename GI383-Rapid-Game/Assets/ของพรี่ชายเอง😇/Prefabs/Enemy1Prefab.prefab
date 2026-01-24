@@ -75,6 +75,7 @@ GameObject:
   - component: {fileID: 8681830701378177456}
   - component: {fileID: 1433725132842515138}
   - component: {fileID: 1782460008279112897}
+  - component: {fileID: -185897100427839236}
   m_Layer: 6
   m_Name: Enemy1Prefab
   m_TagString: Untagged
@@ -144,8 +145,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1171538577
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: ae461a0bfc95d0e47ab5175ce0c9d11b, type: 3}
@@ -236,8 +237,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   moveSpeed: 3
   hp: 10
-  detectionRange: 20
-  giveUpRange: 22
+  detectionRange: 28
+  giveUpRange: 30
   currentState: 0
   groundCheck: {fileID: 5034234761203153753}
   groundLayer:
@@ -255,3 +256,18 @@ MonoBehaviour:
   itemDropPrefab: {fileID: 1595820753878120275, guid: 3e98a5121867aa44ca355613c2b3cb1e, type: 3}
   minXP: 10
   maxXP: 20
+  hitParticlePrefab: {fileID: 2577307348180045539, guid: 758768d7c5c9bf243af0920a243f2718, type: 3}
+  deathEffectPrefab: {fileID: 1078788149163452856, guid: 67160c2496e592d4db2e26dc2350cfcb, type: 3}
+--- !u!210 &-185897100427839236
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6698984400229986755}
+  m_Enabled: 1
+  m_SortingLayerID: 1171538577
+  m_SortingLayer: 5
+  m_SortingOrder: 0
+  m_SortAtRoot: 0
+  m_Sort3DAs2D: 0
