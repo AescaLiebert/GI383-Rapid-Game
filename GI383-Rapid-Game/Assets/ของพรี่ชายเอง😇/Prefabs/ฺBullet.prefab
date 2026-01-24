@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 501595245078753535}
   - component: {fileID: 9209071643284601762}
   - component: {fileID: 2263207284694886994}
-  - component: {fileID: 7359803241781748318}
+  - component: {fileID: 4018827611132356705}
   m_Layer: 8
   m_Name: "\u0E3ABullet"
   m_TagString: Untagged
@@ -102,7 +102,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2360545146390537314}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -167,7 +167,7 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 2.4, y: 0.66}
   m_EdgeRadius: 0.03
---- !u!114 &7359803241781748318
+--- !u!114 &4018827611132356705
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -176,10 +176,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 2360545146390537314}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6276ea253048ad34a82ccc6249d28f61, type: 3}
+  m_Script: {fileID: 11500000, guid: 2ad99ec30e9d4a14c99f364c5925dbfa, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Bullet
-  speed: 20
-  damage: 1
-  lifeTime: 2
-  rb: {fileID: 9209071643284601762}
+  m_EditorClassIdentifier: Assembly-CSharp::KnifeProjectile

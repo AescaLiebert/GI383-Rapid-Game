@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
+
 [RequireComponent(typeof(PlayerStats))]
 [RequireComponent(typeof(PlayerMovement))]
 [RequireComponent(typeof(PlayerInputHandler))]

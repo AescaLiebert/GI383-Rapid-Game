@@ -6,13 +6,14 @@ public class PlayerInputHandler : MonoBehaviour
     [Header("Dependencies")]
     public PlayerMovement movement;
     public PlayerCombat combat;
-
+    public SkillManager skillManager;
     private Vector2 moveInput;
 
     void Awake()
     {
         if (movement == null) movement = GetComponent<PlayerMovement>();
         if (combat == null) combat = GetComponent<PlayerCombat>();
+        if (skillManager == null) skillManager = GetComponent<SkillManager>();
     }
 
     void Update()
@@ -150,7 +151,7 @@ public class PlayerInputHandler : MonoBehaviour
         }
     }
 
-    public void OnShoot(InputValue value)
+  /* public void OnShoot(InputValue value)
     {
         if (value.isPressed)
         {
@@ -167,5 +168,20 @@ public class PlayerInputHandler : MonoBehaviour
                 SendMessage("PerformShoot", SendMessageOptions.DontRequireReceiver);
             }
         }
+    }*/
+
+    public void OnSkill1(InputValue value)
+    {
+        if (value.isPressed && skillManager != null) skillManager.TryUseSkill(1);
+    }
+
+    public void OnSkill2(InputValue value)
+    {
+        if (value.isPressed && skillManager != null) skillManager.TryUseSkill(2);
+    }
+
+    public void OnSkill3(InputValue value)
+    {
+        if (value.isPressed && skillManager != null) skillManager.TryUseSkill(3);
     }
 }
