@@ -301,36 +301,73 @@ public class Enemy : MonoBehaviour
         // Apply zero knockback or a small default.
         TakeDamage(damage, Vector2.zero, 0.1f);
     }
+    
+    public void TakeDamage(float damage, bool applyKnockback)
+    {
+        if (applyKnockback)
+        {
+             TakeDamage(damage, Vector2.zero, 0.1f);
+        }
+        else
+        {
+             // Just damage, no knockback routine
+             hp -= damage;
+             ShowDamageText(damage); 
+             SpawnHitVFX();
+             
+             // Visual Flash only
+             StartCoroutine(DamageFlashRoutine(0.2f));
+
+             if (hp <= 0) Die();
+        }
+    }
+
+    private System.Collections.IEnumerator DamageFlashRoutine(float duration)
+    {
+        spriteRenderer.color = Color.red;
+        yield return new WaitForSeconds(duration);
+        // Restore color only if not stunned (Stun manages its own color)
+        if (currentState != EnemyState.Stunned)
+        {
+            spriteRenderer.color = originalColor;
+        }
+    }
+
+    private void ShowDamageText(float dmg)
+    {
+         if (FloatingTextManager.Instance != null)
+            FloatingTextManager.Instance.ShowDamage(dmg, transform.position + Vector3.up * 0.5f);
+    }
+
+    private void SpawnHitVFX()
+    {
+        if (hitParticlePrefab == null || myCollider == null) return;
+        Bounds b = myCollider.bounds;
+        float px = Random.Range(b.min.x, b.max.x);
+        float minY = Mathf.Max(b.min.y, b.center.y - 0.5f);
+        float py = Random.Range(minY, b.max.y);
+        Vector3 spawnPos = new Vector3(px, py, transform.position.z);
+        ParticleSystem ps = Instantiate(hitParticlePrefab, spawnPos, Quaternion.identity);
+        float randomScale = Random.Range(0.8f, 1.1f); 
+        ps.transform.localScale = Vector3.one * randomScale;
+        Destroy(ps.gameObject, Mathf.Max(ps.main.duration, 0.5f));
+    }
 
     public void TakeDamage(float damage, Vector2 knockbackVector, float duration)
     {
         if(hp > 0)
         {
-            if (knockbackCoroutine != null) StopCoroutine(knockbackCoroutine);
-            knockbackCoroutine = StartCoroutine(KnockedBackRoutine(knockbackVector, duration));
-        }
+        if (knockbackCoroutine != null) StopCoroutine(knockbackCoroutine);
+        knockbackCoroutine = StartCoroutine(KnockedBackRoutine(knockbackVector, duration));
 
         hp -= damage;
-        if (FloatingTextManager.Instance != null)
-            FloatingTextManager.Instance.ShowDamage(damage, transform.position + Vector3.up * 0.5f);
+        ShowDamageText(damage);
 
         // Hit VFX
-        if (hitParticlePrefab != null && myCollider != null)
-        {
-            Bounds b = myCollider.bounds;
-            float px = Random.Range(b.min.x, b.max.x);
-            // "random position should be above than -0.5 of collider" -> Use Center.y - 0.5 as min (clamped to bounds)
-            float minY = Mathf.Max(b.min.y, b.center.y - 0.5f);
-            float py = Random.Range(minY, b.max.y);
-            Vector3 spawnPos = new Vector3(px, py, transform.position.z);
-
-            ParticleSystem ps = Instantiate(hitParticlePrefab, spawnPos, Quaternion.identity);
+        SpawnHitVFX();
             
             // Random Scale (0.8 - 1.2 approx range to cover 0.11 if it was a typo for 1.1, assuming 0.8-1.1)
-            float randomScale = Random.Range(0.8f, 1.1f); 
-            ps.transform.localScale = Vector3.one * randomScale;
-            
-            Destroy(ps.gameObject, Mathf.Max(ps.main.duration, 0.5f));
+
         }
 
         if (hp <= 0)
@@ -474,6 +511,7 @@ public class Enemy : MonoBehaviour
 
         rb.AddForce(force, ForceMode2D.Impulse);
         
+        // spriteRenderer.color = Color.red; // Managed by specific state or FlashRoutine if unified
         spriteRenderer.color = Color.red;
 
         // Brief delay to allow physics to lift the enemy off the ground if applicable

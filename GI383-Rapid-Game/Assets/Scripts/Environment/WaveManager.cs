@@ -50,6 +50,8 @@ public class WaveManager : MonoBehaviour
         StartCoroutine(StartNextWave());
     }
 
+    private bool isSpawning = false;
+
     IEnumerator StartNextWave()
     {
         currentWave++;
@@ -57,6 +59,17 @@ public class WaveManager : MonoBehaviour
 
         if (waveUI != null)
         {
+            waveUI.HideCenterText();
+        }
+
+        // Countdown 3, 2, 1
+        if (waveUI != null)
+        {
+            for (int i = 3; i > 0; i--)
+            {
+                waveUI.ShowCenterText(i.ToString());
+                yield return new WaitForSeconds(1f);
+            }
             waveUI.HideCenterText();
         }
 
@@ -70,40 +83,25 @@ public class WaveManager : MonoBehaviour
         // Calculate time limit for this round
         float currentWaveTime = baseWaveTime + ((currentWave - 1) * waveTimeIncrement);
 
-        // Spawn enemies
-        for (int i = 0; i < enemiesToSpawn; i++)
-        {
-            if (spawner != null)
-            {
-                GameObject enemyObj = spawner.SpawnEnemy();
+        // Start spawning in parallel
+        isSpawning = true;
+        StartCoroutine(SpawnEnemiesRoutine(enemiesToSpawn, currentHpMultiplier, currentSpeedMultiplier));
 
-                if (enemyObj != null)
-                {
-                    Enemy enemyScript = enemyObj.GetComponent<Enemy>();
-                    if (enemyScript != null)
-                    {
-                        enemyScript.hp *= currentHpMultiplier;
-                        enemyScript.moveSpeed *= currentSpeedMultiplier;
-                    }
-                }
-            }
-            float randomInterval = Random.Range(spawnIntervalMin, spawnIntervalMax);
-            yield return new WaitForSeconds(randomInterval);
-        }
-
-        // Wait Loop: Ends if Time runs out OR All enemies are dead
+        // Wait Loop: Ends if Time runs out OR (All enemies are dead AND spawning is finished)
         float timer = currentWaveTime;
-        bool allEnemiesDead = false;
+        bool waveCleared = false;
 
-        while (timer > 0 && !allEnemiesDead)
+        while (timer > 0 && !waveCleared)
         {
             timer -= Time.deltaTime;
             
             // Check enemies count
             int enemyCount = GameObject.FindObjectsByType<Enemy>(FindObjectsSortMode.None).Length;
-            if (enemyCount == 0)
+            
+            // Winning Condition: No enemies left AND spawning is finished
+            if (enemyCount == 0 && !isSpawning)
             {
-                allEnemiesDead = true;
+                waveCleared = true;
             }
 
             // Update UI
@@ -120,8 +118,6 @@ public class WaveManager : MonoBehaviour
                 else
                 {
                    // Ensure center text is hidden if we are not in the last 5 seconds (e.g. at start of wave)
-                   // But we only want to hide it if it WAS showing a countdown. 
-                   // Simplest is to just call Hide if timer > 5.
                    if (timer > 5.0f) 
                    {
                         waveUI.HideCenterText();
@@ -146,5 +142,29 @@ public class WaveManager : MonoBehaviour
 
         // Start next wave
         StartCoroutine(StartNextWave());
+    }
+
+    IEnumerator SpawnEnemiesRoutine(int enemiesToSpawn, float hpMultiplier, float speedMultiplier)
+    {
+         for (int i = 0; i < enemiesToSpawn; i++)
+        {
+            if (spawner != null)
+            {
+                GameObject enemyObj = spawner.SpawnEnemy();
+
+                if (enemyObj != null)
+                {
+                    Enemy enemyScript = enemyObj.GetComponent<Enemy>();
+                    if (enemyScript != null)
+                    {
+                        enemyScript.hp *= hpMultiplier;
+                        enemyScript.moveSpeed *= speedMultiplier;
+                    }
+                }
+            }
+            float randomInterval = Random.Range(spawnIntervalMin, spawnIntervalMax);
+            yield return new WaitForSeconds(randomInterval);
+        }
+        isSpawning = false;
     }
 }

@@ -47,11 +47,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
   player: {fileID: 0}
-  timeBetweenSpawns: 2
   spawnDistanceMin: 10
   spawnDistanceMax: 15
   enemyPrefabs:
-  - {fileID: 6698984400229986755, guid: 00c15f2446185bd45ab95cd2dffbf6e7, type: 3}
+  - {fileID: 6698984400229986755, guid: 13adecf6ba6d44e4e8e65c09c6e5149f, type: 3}
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -68,24 +67,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WaveManager
   spawner: {fileID: 8249747323291832601}
-  waves:
-  - waveName: 
-    enemyCount: 5
-    minSpawnInterval: 1
-    maxSpawnInterval: 3
-    minSpawnCount: 1
-    maxSpawnCount: 1
-    waveDuration: 30
-    waveSpecificPrefabs: []
-  - waveName: 
-    enemyCount: 10
-    minSpawnInterval: 1
-    maxSpawnInterval: 3
-    minSpawnCount: 1
-    maxSpawnCount: 2
-    waveDuration: 30
-    waveSpecificPrefabs: []
+  waveUI: {fileID: 0}
   timeBetweenWaves: 5
+  spawnIntervalMin: 1
+  spawnIntervalMax: 3
+  baseWaveTime: 30
+  waveTimeIncrement: 5
+  baseEnemyCount: 5
+  enemyCountIncrement: 2
+  hpIncreasePercentage: 0.1
+  speedIncreasePercentage: 0.05
 --- !u!114 &2879765559265199567
 MonoBehaviour:
   m_ObjectHideFlags: 0

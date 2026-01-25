@@ -45,7 +45,7 @@ public class SkillManager : MonoBehaviour
 
     private void CheckUnlock(int level)
     {// ปลดล็อก Skill 1
-        if (level >= 2 && !unlockSkill1)
+        if (level >= 5 && !unlockSkill1)
         {
             unlockSkill1 = true;
             activeSlot1 = skill1_ThrowKnife;
@@ -54,7 +54,7 @@ public class SkillManager : MonoBehaviour
         }
 
         // ปลดล็อก Skill 2
-        if (level >= 5 && !unlockSkill2)
+        if (level >= 10 && !unlockSkill2)
         {
             unlockSkill2 = true;
             activeSlot2 = skill2_Invisible;
@@ -63,7 +63,7 @@ public class SkillManager : MonoBehaviour
         }
 
         // ปลดล็อก Skill 3 
-        if (level >= 10 && !unlockSkill3)
+        if (level >= 15 && !unlockSkill3)
         {
             unlockSkill3 = true;
             activeSlot3 = skill3_Ultimate;

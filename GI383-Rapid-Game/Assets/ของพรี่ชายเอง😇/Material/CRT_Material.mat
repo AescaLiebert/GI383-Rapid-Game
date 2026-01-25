@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: CRT_Material
-  m_Shader: {fileID: 4800000, guid: 7aa28ba3a70620a4dbe52a3c881945fa, type: 3}
+  m_Shader: {fileID: 4800000, guid: ff0873c7bd2670248b30c09515c2b96d, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -42,14 +42,18 @@ Material:
     m_Ints: []
     m_Floats:
     - _AberrationAmount: 0.005
+    - _Curvature: 0.045
     - _EnableExternalAlpha: 0
     - _ScanlineCount: 800
     - _ScanlineIntensity: 0.2
     - _ScanlineSpeed: 1
-    - _VignetteSmoothness: 0.2
+    - _VignetteSmoothness: 1
     - _VignetteStrength: 0.5
+    - _VignetteWidth: 0
     - _ZWrite: 0
+    - _Zoom: 1.13
     m_Colors:
+    - _BorderColor: {r: 0, g: 0, b: 0, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

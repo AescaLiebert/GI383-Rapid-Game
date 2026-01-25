@@ -14,6 +14,7 @@ public class InvisibleSkill : SkillBase
     {
        
         player.stats.SetInvincible(duration);
+        player.IsInvisible = true;
 
         
         var sr = player.animHandler.GetComponentInChildren<SpriteRenderer>();
@@ -26,5 +27,6 @@ public class InvisibleSkill : SkillBase
 
         
         sr.color = originalColor;
+        player.IsInvisible = false;
     }
 }

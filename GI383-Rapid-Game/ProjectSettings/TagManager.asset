@@ -69,5 +69,8 @@ TagManager:
   - name: CameraLevel
     uniqueID: 1576913063
     locked: 0
+  - name: UI
+    uniqueID: 690279827
+    locked: 0
   m_RenderingLayers:
   - Default

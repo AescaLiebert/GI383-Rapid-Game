@@ -4,7 +4,7 @@ using System.Collections;
 public class UltimateSkill : SkillBase
 {
     public int hitCount = 4;
-    public float interval = 0.2f;
+    public float interval = 1f;
     public Vector2 hitBoxSize = new Vector2(5, 3);
     public LayerMask enemyLayer;
     public GameObject ultimateEffectPrefab; 
@@ -21,7 +21,7 @@ public class UltimateSkill : SkillBase
         player.movement.CanMove = false;
         player.stats.SetInvincible(hitCount * interval + 1f); 
 
-        int damagePerHit = GetLevelScaledDamage() * 10; 
+        int damagePerHit = GetLevelScaledDamage();
 
         for (int i = 0; i < hitCount; i++)
         {
@@ -31,9 +31,9 @@ public class UltimateSkill : SkillBase
                 Instantiate(ultimateEffectPrefab, attackPoint.position, attackPoint.rotation);
             }
 
-            //  เคลื่อนที่ไปข้างหน้าเล็กน้อย
+            //  เคลื่อนที่ไปข้างหน้าเล็กน้อย (More forward)
             float dir = player.animHandler.GetComponentInChildren<SpriteRenderer>().flipX ? 1 : -1;
-            player.transform.Translate(Vector2.right * dir * 1f);
+            player.transform.Translate(Vector2.right * dir * 2f);
 
             //  หาศัตรูในระยะ
             Collider2D[] enemies = Physics2D.OverlapBoxAll(player.transform.position, hitBoxSize, 0, enemyLayer);
@@ -49,8 +49,9 @@ public class UltimateSkill : SkillBase
                 {
                     // Hit สุดท้ายให้ Stun 2 วิ
                     float stun = (i == hitCount - 1) ? 2f : 0.1f;
-                    // ใช้ KnockbackVector (x, y)
-                    enemyScript.TakeDamage(damagePerHit); 
+                    // ใช้ KnockbackVector (x, y) - Applying small knockback to trigger the stun in Enemy.TakeDamage
+                    Vector2 knockback = new Vector2(dir * 1f, 5f);
+                    enemyScript.TakeDamage(damagePerHit, knockback, stun); 
                 }
             }
 

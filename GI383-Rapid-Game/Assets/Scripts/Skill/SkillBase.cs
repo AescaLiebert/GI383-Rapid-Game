@@ -36,7 +36,7 @@ public abstract class SkillBase : MonoBehaviour
     {
         if (player == null || player.stats == null) return Mathf.RoundToInt(baseDamage);
 
-        float level = player.stats.currentLevel;       
+        float level = player.stats.currentLevel;     
         float multiplier = 1f + (level / 10f);
         return Mathf.RoundToInt(baseDamage * multiplier);
     }
@@ -55,5 +55,11 @@ public abstract class SkillBase : MonoBehaviour
 
         // ส่งค่า 0..1 (1 = เต็มหลอด, 0 = หมดเวลา)
         return Mathf.Clamp01(remaining / baseCooldown);
+    }
+
+    public float GetRemainingTime()
+    {
+        if (!IsOnCooldown()) return 0f;
+        return (lastUsedTime + baseCooldown) - Time.time;
     }
 }

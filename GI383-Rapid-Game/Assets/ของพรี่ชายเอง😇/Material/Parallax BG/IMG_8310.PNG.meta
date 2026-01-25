@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: c89c68226be42ec499268f9d9886a4e3
+guid: c96b0892e1fb8f74a8917e4b7f37b54c
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 8623527983514296746
-    second: WerewolfPortrait_0
+      213: -8567539177091946544
+    second: IMG_8310_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: WerewolfPortrait_0
+      name: IMG_8310_0
       rect:
         serializedVersion: 2
-        x: 3
-        y: 4
-        width: 590
-        height: 650
+        x: 0
+        y: 0
+        width: 960
+        height: 435
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: aa1a208f20deca770800000000000000
-      internalID: 8623527983514296746
+      spriteID: 0d7213ed28cf91980800000000000000
+      internalID: -8567539177091946544
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      WerewolfPortrait_0: 8623527983514296746
+      IMG_8310_0: -8567539177091946544
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

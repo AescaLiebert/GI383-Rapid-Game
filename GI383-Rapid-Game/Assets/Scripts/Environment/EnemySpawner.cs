@@ -7,6 +7,7 @@ public class EnemySpawner : MonoBehaviour
     public Transform player;
     public float spawnDistanceMin = 10f;
     public float spawnDistanceMax = 15f;
+    public float spawnHeightOffset = 1.0f;
 
     [Header("Enemy Prefabs")]
     public List<GameObject> enemyPrefabs;
@@ -125,7 +126,7 @@ public class EnemySpawner : MonoBehaviour
             {
                 return false;
             }
-            yPos = hit.point.y;
+            yPos = hit.point.y + spawnHeightOffset;
             return true;
         }
         return false;

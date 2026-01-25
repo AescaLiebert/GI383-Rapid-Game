@@ -28,6 +28,27 @@ public class HealthBarUI : MonoBehaviour
     [Tooltip("Reference to the Player component")]
     public Player player;
 
+    [Header("Profile Picture")]
+    [Tooltip("Image component for the player profile picture")]
+    public Image profileImage;
+
+    [Tooltip("Sprite for Normal status (Health >= 50%)")]
+    public Sprite normalProfileSprite;
+
+    [Tooltip("Sprite for Pain status (20% < Health < 50%)")]
+    public Sprite painProfileSprite;
+
+    [Tooltip("Sprite for Near Death status (Health <= 20%)")]
+    public Sprite nearDeathProfileSprite;
+
+    [Range(0f, 1f)]
+    [Tooltip("Threshold for Pain status (0.5 means 50%)")]
+    public float painThreshold = 0.5f;
+
+    [Range(0f, 1f)]
+    [Tooltip("Threshold for Near Death status (0.2 means 20%)")]
+    public float nearDeathThreshold = 0.2f;
+
     private int maxHP; // Cached max HP
     private Vector2 defaultCellSize; // Stores the initial cell size logic
 
@@ -249,6 +270,31 @@ public class HealthBarUI : MonoBehaviour
         // We want 10 HP to show as Full. So use Effective Max 10.
         int effectiveMaxHP = heartImages.Count * 2;
         
+        // Update Profile Picture Logic
+        // We use the 'maxHP' field which caches the true player MaxHP, or effectiveMaxHP if more appropriate?
+        // Usually Profile Pic should depend on Real HP %.
+        // Let's use the maxHP we cached from the player stats, or fallback to effective if issues.
+        int referenceMaxHP = (this.maxHP > 0) ? this.maxHP : effectiveMaxHP;
+        if (referenceMaxHP <= 0) referenceMaxHP = 1; // Prevent division by zero
+
+        float healthPercent = (float)currentHP / referenceMaxHP;
+        
+        if (profileImage != null)
+        {
+            if (healthPercent <= nearDeathThreshold && nearDeathProfileSprite != null)
+            {
+                profileImage.sprite = nearDeathProfileSprite;
+            }
+            else if (healthPercent <= painThreshold && painProfileSprite != null)
+            {
+                profileImage.sprite = painProfileSprite;
+            }
+            else if (normalProfileSprite != null)
+            {
+                profileImage.sprite = normalProfileSprite;
+            }
+        }
+
         // Clamp currentHP to effective Max for display purposes
         // (If player has 11 HP, treat as 10)
         int displayHP = Mathf.Clamp(currentHP, 0, effectiveMaxHP);

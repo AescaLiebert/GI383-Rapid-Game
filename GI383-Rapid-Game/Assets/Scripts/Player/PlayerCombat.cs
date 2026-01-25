@@ -183,4 +183,12 @@ public class PlayerCombat : MonoBehaviour
         Gizmos.matrix = Matrix4x4.TRS(attackPoint.position, attackPoint.rotation, Vector3.one);
         Gizmos.DrawWireCube(Vector3.zero, attackArea);
     }
+    public float GetAttackCooldownProgress()
+    {
+        if (Time.time >= nextAttackTime) return 0f;
+        
+        float remaining = nextAttackTime - Time.time;
+        // Clamp between 0 and 1 just in case
+        return Mathf.Clamp01(remaining / attackCooldown);
+    }
 }

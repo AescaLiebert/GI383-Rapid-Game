@@ -19,6 +19,12 @@ public class DeathSequenceController : MonoBehaviour
     [Tooltip("The RawImage component to display the video on")]
     public RawImage videoDisplayImage; 
 
+    [Header("CRT Input Settings")]
+    [Tooltip("The RawImage that displays the final CRT output (User Click Area).")]
+    public RawImage crtScreenRawImage;
+    [Tooltip("The Camera that renders the UI to the RenderTexture.")]
+    public Camera crtOutputCamera; 
+
     [Header("Settings")]
     public float flickerDuration = 0.5f;
     public float flickerSpeed = 0.05f;
@@ -78,6 +84,7 @@ public class DeathSequenceController : MonoBehaviour
             videoDisplayImage.texture = gameOverVideo.targetTexture;
             // Set Color to white to ensure texture is visible
             videoDisplayImage.color = Color.white;
+            videoDisplayImage.raycastTarget = false; // Fix: Ensure Video overlay doesn't block Death Panel clicks
 
             gameOverVideo.Play();
             
@@ -94,6 +101,51 @@ public class DeathSequenceController : MonoBehaviour
         if (deathPanel != null)
         {
             deathPanel.SetActive(true);
+
+            // Fix: Setup Input for Screen Space - Camera rendered to Texture
+            // We need to swap the GraphicRaycaster for our custom RenderTextureRaycaster
+            SetupRenderTextureRaycaster(deathPanel);
+        }
+    }
+
+    private void SetupRenderTextureRaycaster(GameObject panel)
+    {
+        Canvas canvas = panel.GetComponentInParent<Canvas>();
+        if (canvas == null) return;
+
+        // 1. Disable default Graphic Raycaster (it fails on RTs)
+        GraphicRaycaster defaultRaycaster = canvas.GetComponent<GraphicRaycaster>();
+        if (defaultRaycaster != null && !(defaultRaycaster is Game.UI.RenderTextureRaycaster))
+        {
+            defaultRaycaster.enabled = false;
+        }
+
+        // 2. Add or Get our Custom Raycaster
+        Game.UI.RenderTextureRaycaster customRaycaster = canvas.GetComponent<Game.UI.RenderTextureRaycaster>();
+        if (customRaycaster == null)
+        {
+            customRaycaster = canvas.gameObject.AddComponent<Game.UI.RenderTextureRaycaster>();
+        }
+
+        // 3. Configure dependencies
+        // Priority 1: Manual Assignment
+        if (crtOutputCamera != null && crtScreenRawImage != null)
+        {
+            customRaycaster.renderTextureCamera = crtOutputCamera;
+            customRaycaster.screenRawImage = crtScreenRawImage;
+            return;
+        }
+
+        // Priority 2: Auto-Find CRTCameraSetup (Fallback)
+        CRTCameraSetup crtSetup = FindFirstObjectByType<CRTCameraSetup>();
+        if (crtSetup != null)
+        {
+             customRaycaster.renderTextureCamera = crtSetup.targetCamera;
+             customRaycaster.screenRawImage = crtSetup.GetComponent<RawImage>();
+        }
+        else
+        {
+            Debug.LogWarning("DeathSequence: Could not find CRT Setup (Manual or Auto). Input might fail. Please assign 'Crt Screen Raw Image' and 'Crt Output Camera' in the Inspector.");
         }
     }
 
