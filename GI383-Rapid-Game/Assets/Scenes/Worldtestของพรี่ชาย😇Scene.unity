@@ -119,6 +119,72 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1001 &153125287
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 262146928}
+    m_Modifications:
+    - target: {fileID: 603203146928883363, guid: 3562963504910b3409b769ea6dfc463d, type: 3}
+      propertyPath: m_Name
+      value: Skillslot
+      objectReference: {fileID: 0}
+    - target: {fileID: 3535349926531056492, guid: 3562963504910b3409b769ea6dfc463d, type: 3}
+      propertyPath: skillManager
+      value: 
+      objectReference: {fileID: 555279492}
+    - target: {fileID: 6277632444531056758, guid: 3562963504910b3409b769ea6dfc463d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1812
+      objectReference: {fileID: 0}
+    - target: {fileID: 6277632444531056758, guid: 3562963504910b3409b769ea6dfc463d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -974
+      objectReference: {fileID: 0}
+    - target: {fileID: 6277632444531056758, guid: 3562963504910b3409b769ea6dfc463d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6277632444531056758, guid: 3562963504910b3409b769ea6dfc463d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6277632444531056758, guid: 3562963504910b3409b769ea6dfc463d, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6277632444531056758, guid: 3562963504910b3409b769ea6dfc463d, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6277632444531056758, guid: 3562963504910b3409b769ea6dfc463d, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6277632444531056758, guid: 3562963504910b3409b769ea6dfc463d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6277632444531056758, guid: 3562963504910b3409b769ea6dfc463d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6277632444531056758, guid: 3562963504910b3409b769ea6dfc463d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3562963504910b3409b769ea6dfc463d, type: 3}
+--- !u!4 &153125288 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6277632444531056758, guid: 3562963504910b3409b769ea6dfc463d, type: 3}
+  m_PrefabInstance: {fileID: 153125287}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &169309579 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2444777215796051656, guid: 336c58c912887fb4d9586ca29ce358df, type: 3}
@@ -486,9 +552,65 @@ PrefabInstance:
       objectReference: {fileID: 2067106928}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 1357359647814321384, guid: 16d554ad25f7729419fb17a182f2af33, type: 3}
+      insertIndex: 5
+      addedObject: {fileID: 153125288}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 16d554ad25f7729419fb17a182f2af33, type: 3}
+--- !u!224 &262146928 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 1357359647814321384, guid: 16d554ad25f7729419fb17a182f2af33, type: 3}
+  m_PrefabInstance: {fileID: 262146927}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &348313625
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 348313626}
+  - component: {fileID: 348313627}
+  m_Layer: 0
+  m_Name: InvisibleSkill
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &348313626
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 348313625}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1.91, y: -0.17, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 169309579}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &348313627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 348313625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fca448c2d23fb89438437ca440709a5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InvisibleSkill
+  skillName: InvisibleSkill
+  baseCooldown: 10
+  baseDamage: 0
+  duration: 4
 --- !u!1 &390143730
 GameObject:
   m_ObjectHideFlags: 0
@@ -576,9 +698,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 976444840619344605, guid: 336c58c912887fb4d9586ca29ce358df, type: 3}
+      propertyPath: knifeWeapon
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1295893265555429504, guid: 336c58c912887fb4d9586ca29ce358df, type: 3}
       propertyPath: m_LocalPosition.z
       value: -35
+      objectReference: {fileID: 0}
+    - target: {fileID: 1662058320042426280, guid: 336c58c912887fb4d9586ca29ce358df, type: 3}
+      propertyPath: m_Name
+      value: ThrowKnifeSkill
+      objectReference: {fileID: 0}
+    - target: {fileID: 1662058320042426280, guid: 336c58c912887fb4d9586ca29ce358df, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 2261282325423674705, guid: 336c58c912887fb4d9586ca29ce358df, type: 3}
       propertyPath: offset.z
@@ -624,6 +758,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4082206599513055322, guid: 336c58c912887fb4d9586ca29ce358df, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 2067106915}
+    - target: {fileID: 4082206599513055322, guid: 336c58c912887fb4d9586ca29ce358df, type: 3}
+      propertyPath: skill3_Ultimate
+      value: 
+      objectReference: {fileID: 1837861508}
+    - target: {fileID: 4082206599513055322, guid: 336c58c912887fb4d9586ca29ce358df, type: 3}
+      propertyPath: skill2_Invisible
+      value: 
+      objectReference: {fileID: 348313627}
+    - target: {fileID: 4082206599513055322, guid: 336c58c912887fb4d9586ca29ce358df, type: 3}
+      propertyPath: skill1_ThrowKnife
+      value: 
+      objectReference: {fileID: 555279495}
+    - target: {fileID: 4375947690217761027, guid: 336c58c912887fb4d9586ca29ce358df, type: 3}
+      propertyPath: skillManager
+      value: 
+      objectReference: {fileID: 555279492}
     - target: {fileID: 6970449647323510901, guid: 336c58c912887fb4d9586ca29ce358df, type: 3}
       propertyPath: hitParticle
       value: 
@@ -676,11 +830,59 @@ PrefabInstance:
       propertyPath: m_RendererIndex
       value: -1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4452035781579981097, guid: 336c58c912887fb4d9586ca29ce358df, type: 3}
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 2444777215796051656, guid: 336c58c912887fb4d9586ca29ce358df, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 348313626}
+    - targetCorrespondingSourceObject: {fileID: 2444777215796051656, guid: 336c58c912887fb4d9586ca29ce358df, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1837861507}
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1662058320042426280, guid: 336c58c912887fb4d9586ca29ce358df, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 555279495}
   m_SourcePrefab: {fileID: 100100000, guid: 336c58c912887fb4d9586ca29ce358df, type: 3}
+--- !u!114 &555279492 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4082206599513055322, guid: 336c58c912887fb4d9586ca29ce358df, type: 3}
+  m_PrefabInstance: {fileID: 555279491}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8a4aaa3dd7042041a0fcacc648c4801, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SkillManager
+--- !u!1 &555279493 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1662058320042426280, guid: 336c58c912887fb4d9586ca29ce358df, type: 3}
+  m_PrefabInstance: {fileID: 555279491}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &555279494 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 926302801658061068, guid: 336c58c912887fb4d9586ca29ce358df, type: 3}
+  m_PrefabInstance: {fileID: 555279491}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &555279495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 555279493}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 947c0245c8f67a040a661229a5a6cbbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ThrowKnifeSkill
+  skillName: ThrowKnifeSkill
+  baseCooldown: 0.1
+  baseDamage: 5
+  knifePrefab: {fileID: 2360545146390537314, guid: 37dd444fa5056c24ca90b8df85e7ba13, type: 3}
+  speed: 20
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -787,6 +989,61 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a0e6afdd59b33b4d97acbf9a66c972d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WaveUI
+--- !u!1 &1837861506
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1837861507}
+  - component: {fileID: 1837861508}
+  m_Layer: 0
+  m_Name: UltimateSkill
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1837861507
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1837861506}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1.04, y: -0.64, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 169309579}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1837861508
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1837861506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 574ced29f7186754baecae005114639a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UltimateSkill
+  skillName: UltimateSkill
+  baseCooldown: 20
+  baseDamage: 0.1
+  hitCount: 4
+  interval: 0.2
+  hitBoxSize: {x: 5, y: 3}
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  ultimateEffectPrefab: {fileID: 5695522070656283032, guid: c8dd45a34a83f6a45b685f9866f553c9, type: 3}
+  attackPoint: {fileID: 555279494}
 --- !u!114 &1992357527 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1604233120734137723, guid: 16d554ad25f7729419fb17a182f2af33, type: 3}

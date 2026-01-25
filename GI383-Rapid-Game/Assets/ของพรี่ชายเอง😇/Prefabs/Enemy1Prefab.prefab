@@ -78,7 +78,7 @@ GameObject:
   - component: {fileID: -185897100427839236}
   m_Layer: 6
   m_Name: Enemy1Prefab
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -254,8 +254,8 @@ MonoBehaviour:
   attackArea: {x: 1.7, y: 2.16}
   slash: {fileID: 7461607183011662884, guid: d74bb0a32e99661408211ffd2c0f76d3, type: 3}
   itemDropPrefab: {fileID: 1595820753878120275, guid: 3e98a5121867aa44ca355613c2b3cb1e, type: 3}
-  minXP: 10
-  maxXP: 20
+  minXP: 100
+  maxXP: 200
   hitParticlePrefab: {fileID: 2577307348180045539, guid: 758768d7c5c9bf243af0920a243f2718, type: 3}
   deathEffectPrefab: {fileID: 1078788149163452856, guid: 67160c2496e592d4db2e26dc2350cfcb, type: 3}
 --- !u!210 &-185897100427839236

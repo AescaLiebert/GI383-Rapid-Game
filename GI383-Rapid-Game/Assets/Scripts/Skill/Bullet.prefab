@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2263207284694886994}
   - component: {fileID: 7359803241781748318}
   m_Layer: 8
-  m_Name: "\u0E3ABullet"
+  m_Name: Bullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -80,8 +80,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -1017861767
+  m_SortingLayer: 7
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: ea0b960a8c1ba0344b7a93730cb5d931, type: 3}
@@ -102,7 +102,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2360545146390537314}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -176,10 +176,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 2360545146390537314}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6276ea253048ad34a82ccc6249d28f61, type: 3}
+  m_Script: {fileID: 11500000, guid: 2ad99ec30e9d4a14c99f364c5925dbfa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bullet
-  speed: 20
-  damage: 1
-  lifeTime: 2
-  rb: {fileID: 9209071643284601762}

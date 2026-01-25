@@ -83,6 +83,12 @@ public class Enemy : MonoBehaviour
 
     void FixedUpdate()
     {
+
+        if (transform.position.y < -20f) 
+        {
+            Destroy(gameObject); 
+            return;
+        }
         // Global State Machine
         switch (currentState)
         {
