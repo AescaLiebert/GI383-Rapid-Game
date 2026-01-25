@@ -40,4 +40,20 @@ public abstract class SkillBase : MonoBehaviour
         float multiplier = 1f + (level / 10f);
         return Mathf.RoundToInt(baseDamage * multiplier);
     }
+
+    public bool IsOnCooldown()
+    {
+        return Time.time < lastUsedTime + baseCooldown;
+    }
+
+    public float GetCooldownRatio()
+    {
+        if (!IsOnCooldown()) return 0f;
+
+        float timeSinceUse = Time.time - lastUsedTime;
+        float remaining = baseCooldown - timeSinceUse;
+
+        // ส่งค่า 0..1 (1 = เต็มหลอด, 0 = หมดเวลา)
+        return Mathf.Clamp01(remaining / baseCooldown);
+    }
 }

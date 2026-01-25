@@ -6,7 +6,9 @@ public class UltimateSkill : SkillBase
     public int hitCount = 4;
     public float interval = 0.2f;
     public Vector2 hitBoxSize = new Vector2(5, 3);
-    public LayerMask enemyLayer; // อย่าลืมตั้งค่าใน Inspector
+    public LayerMask enemyLayer;
+    public GameObject ultimateEffectPrefab; 
+    public Transform attackPoint;
 
     protected override void Activate()
     {
@@ -15,7 +17,7 @@ public class UltimateSkill : SkillBase
 
     private IEnumerator UltimateRoutine()
     {
-        // หยุดขยับชั่วคราว (ถ้าต้องการ)
+       
         player.movement.CanMove = false;
         player.stats.SetInvincible(hitCount * interval + 1f); // อมตะระหว่างใช้อัลติ
 
@@ -23,11 +25,17 @@ public class UltimateSkill : SkillBase
 
         for (int i = 0; i < hitCount; i++)
         {
-            // 1. เคลื่อนที่ไปข้างหน้าเล็กน้อย
+            // --- ส่วนของ Visual เฉพาะตัว ---
+            if (ultimateEffectPrefab != null && attackPoint != null)
+            {
+                Instantiate(ultimateEffectPrefab, attackPoint.position, attackPoint.rotation);
+            }
+
+            //  เคลื่อนที่ไปข้างหน้าเล็กน้อย
             float dir = player.animHandler.GetComponentInChildren<SpriteRenderer>().flipX ? 1 : -1;
             player.transform.Translate(Vector2.right * dir * 1f);
 
-            // 2. หาศัตรูในระยะ
+            //  หาศัตรูในระยะ
             Collider2D[] enemies = Physics2D.OverlapBoxAll(player.transform.position, hitBoxSize, 0, enemyLayer);
 
             foreach (var e in enemies)

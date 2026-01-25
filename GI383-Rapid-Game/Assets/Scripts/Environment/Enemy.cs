@@ -77,6 +77,12 @@ public class Enemy : MonoBehaviour
 
     void FixedUpdate()
     {
+
+        if (transform.position.y < -20f) // ปรับเลข -20 ตามความลึกของเหวในเกมคุณ
+        {
+            Destroy(gameObject); // สั่งทำลายทันทีเพื่อให้ Wave Manager รู้ว่าตัวนี้หายไปแล้ว
+            return;
+        }
         // Global State Machine
         switch (currentState)
         {

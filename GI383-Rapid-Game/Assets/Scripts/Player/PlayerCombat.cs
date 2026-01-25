@@ -110,7 +110,7 @@ public class PlayerCombat : MonoBehaviour
         OnAttackEnd?.Invoke();
     }
 
-    private void PerformMeleeAttack()
+    public void PerformMeleeAttack()
     {
         if (attackPoint == null)
         {
