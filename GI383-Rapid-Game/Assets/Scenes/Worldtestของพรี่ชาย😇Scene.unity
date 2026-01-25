@@ -879,8 +879,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ThrowKnifeSkill
   skillName: ThrowKnifeSkill
-  baseCooldown: 0.1
-  baseDamage: 5
+  baseCooldown: 5
+  baseDamage: 3
   knifePrefab: {fileID: 2360545146390537314, guid: 37dd444fa5056c24ca90b8df85e7ba13, type: 3}
   speed: 20
 --- !u!1 &619394800
@@ -1035,7 +1035,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UltimateSkill
   skillName: UltimateSkill
   baseCooldown: 20
-  baseDamage: 0.1
+  baseDamage: 5
   hitCount: 4
   interval: 0.2
   hitBoxSize: {x: 5, y: 3}
@@ -1114,6 +1114,18 @@ PrefabInstance:
       propertyPath: waveUI
       value: 
       objectReference: {fileID: 1335156677}
+    - target: {fileID: 6960755422001756797, guid: 051c5493486df0942a4ce9e179eb4c06, type: 3}
+      propertyPath: spawnInterval
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6960755422001756797, guid: 051c5493486df0942a4ce9e179eb4c06, type: 3}
+      propertyPath: spawnIntervalMax
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6960755422001756797, guid: 051c5493486df0942a4ce9e179eb4c06, type: 3}
+      propertyPath: spawnIntervalMin
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6960755422001756797, guid: 051c5493486df0942a4ce9e179eb4c06, type: 3}
       propertyPath: waves.Array.data[0].enemyCount
       value: 10

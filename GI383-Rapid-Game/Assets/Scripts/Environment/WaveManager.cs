@@ -9,8 +9,10 @@ public class WaveManager : MonoBehaviour
     [Header("Wave Configuration (ตั้งค่าพื้นฐาน)")]
     [Tooltip("ระยะเวลาพักระหว่าง Wave (วินาที)")]
     public float timeBetweenWaves = 5f;
-    [Tooltip("ระยะห่างระหว่างการเกิดของศัตรูแต่ละตัวใน Wave เดียวกัน")]
-    public float spawnInterval = 0.5f;
+    [Tooltip("เวลาสุ่มเกิดศัตรู (วินาที) - ค่าต่ำสุด")]
+    public float spawnIntervalMin = 0.2f;
+    [Tooltip("เวลาสุ่มเกิดศัตรู (วินาที) - ค่าสูงสุด")]
+    public float spawnIntervalMax = 1.5f;
 
     [Header("Time Limit Settings")]
     [Tooltip("เวลาเริ่มต้นสำหรับ Wave 1")]
@@ -85,7 +87,8 @@ public class WaveManager : MonoBehaviour
                     }
                 }
             }
-            yield return new WaitForSeconds(spawnInterval);
+            float randomInterval = Random.Range(spawnIntervalMin, spawnIntervalMax);
+            yield return new WaitForSeconds(randomInterval);
         }
 
         // Wait Loop: Ends if Time runs out OR All enemies are dead
