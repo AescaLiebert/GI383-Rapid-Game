@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.Video;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using System.Collections.Generic;
 
 public class DeathSequenceController : MonoBehaviour
 {
@@ -29,6 +30,18 @@ public class DeathSequenceController : MonoBehaviour
     public float flickerDuration = 0.5f;
     public float flickerSpeed = 0.05f;
     public float delayBeforeButton = 10.0f; // Time to wait after video starts before showing restart button
+    
+    [Header("Death Animation Settings")]
+    [Tooltip("Time to wait for player death animation before freezing time.")]
+    public float deathAnimationDuration = 1.5f;
+
+    [Header("Glitch Settings")]
+    public int glitchBarCount = 20;
+    public Color[] glitchColors = new Color[] 
+    { 
+        Color.black, Color.black, new Color(1f, 0f, 0.4f), new Color(0.6f, 0f, 1f), Color.red 
+    };
+    private List<Image> glitchBars = new List<Image>();
 
     public void StartDeathSequence()
     {
@@ -39,25 +52,38 @@ public class DeathSequenceController : MonoBehaviour
 
     private IEnumerator DeathRoutine()
     {
-        // Ensure time is running for the sequence (or use Realtime)
-        Time.timeScale = 0f; // Stop the game action immediately
+        // 0. Wait for Player Death Animation
+        // Ensure time is running so animation plays
+        Time.timeScale = 1f; 
+        Debug.Log($"DeathSequence: Waiting {deathAnimationDuration}s for death animation...");
+        yield return new WaitForSeconds(deathAnimationDuration);
 
-        // 1. Desperate Flickering (Red/Black)
+        // 1. TIMESTOP & Silence
+        Time.timeScale = 0f; // Stop the game action immediately
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.StopAllSounds();
+        }
+
+        // 2. Glitch Freeze Effect (Replaces Desperate Flickering)
         if (flickerImage != null)
         {
             flickerImage.gameObject.SetActive(true);
+            
+            // Initialize glitch bars if needed
+            if (glitchBars.Count == 0) CreateGlitchBars();
+
             float timer = 0;
-            bool isRed = true;
             
             while(timer < flickerDuration)
             {
-                flickerImage.color = isRed ? new Color(0.8f, 0f, 0f, 0.4f) : Color.black;
-                isRed = !isRed;
-                
+                UpdateGlitchEffect();
                 yield return new WaitForSecondsRealtime(flickerSpeed);
                 timer += flickerSpeed;
             }
             
+            // Clean up glitch visibility
+            foreach(var bar in glitchBars) bar.gameObject.SetActive(false);
             flickerImage.color = Color.black; 
             flickerImage.gameObject.SetActive(false); 
         }
@@ -159,5 +185,56 @@ public class DeathSequenceController : MonoBehaviour
 
         Time.timeScale = 1f; // Ensure time is running again
         SceneManager.LoadScene("MainMenu");
+    }
+
+    private void CreateGlitchBars()
+    {
+        if (flickerImage == null) return;
+        
+        for (int i = 0; i < glitchBarCount; i++)
+        {
+            GameObject barObj = new GameObject($"GlitchBar_{i}");
+            barObj.transform.SetParent(flickerImage.transform, false);
+            Image barImg = barObj.AddComponent<Image>();
+            barImg.raycastTarget = false;
+            barImg.color = Color.black;
+            barObj.SetActive(false);
+            glitchBars.Add(barImg);
+        }
+    }
+
+    private void UpdateGlitchEffect()
+    {
+        // Random Background Flicker
+        if (Random.value > 0.7f)
+             flickerImage.color = glitchColors[Random.Range(0, glitchColors.Length)];
+        else
+             flickerImage.color = new Color(0, 0, 0, Random.Range(0f, 0.5f)); 
+
+        // Update Bars
+        foreach (var bar in glitchBars)
+        {
+             if (Random.value > 0.6f) 
+             {
+                 bar.gameObject.SetActive(true);
+                 RectTransform rect = bar.rectTransform;
+                 
+                 float yPos = Random.value;
+                 float height = Random.Range(0.01f, 0.2f);
+                 float xPos = Random.Range(0f, 0.9f);
+                 float width = Random.Range(0.1f, 1f);
+
+                 rect.anchorMin = new Vector2(xPos, yPos);
+                 rect.anchorMax = new Vector2(xPos + width, yPos + height);
+                 rect.offsetMin = Vector2.zero;
+                 rect.offsetMax = Vector2.zero;
+
+                 bar.color = glitchColors[Random.Range(0, glitchColors.Length)];
+             }
+             else
+             {
+                 bar.gameObject.SetActive(false);
+             }
+        }
     }
 }

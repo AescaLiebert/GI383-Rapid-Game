@@ -29,6 +29,12 @@ public class SceneLoader : MonoBehaviour
         Color.red 
     };
 
+    [Header("Audio Settings")]
+    [SerializeField] private string glitchSoundName = "GlitchTransition";
+    [SerializeField] private string SFX_UI_Pressed = "SFX_UI_Pressed";
+    [SerializeField] private string mainMenuBGMName = "MainMenuBGM";
+    [SerializeField] private string SFX_Glitch = "SFX_Glitch";
+
     private void Start()
     {
         if (attemptText != null)
@@ -38,10 +44,28 @@ public class SceneLoader : MonoBehaviour
             attemptText.text = $"Attempt : {attempts}";
             attemptText.gameObject.SetActive(false);
         }
+
+        // Play Main Menu BGM
+        if (SoundManager.Instance != null && !string.IsNullOrEmpty(mainMenuBGMName))
+        {
+            SoundManager.Instance.PlayBGM(mainMenuBGMName);
+        }
     }
 
     public void LoadGameScene()
     {
+        // Play SFX UI Pressed
+        if (SoundManager.Instance != null && !string.IsNullOrEmpty(SFX_UI_Pressed))
+        {
+            SoundManager.Instance.PlaySound(SFX_UI_Pressed);
+        }
+
+        // Play Glitch Sound
+        if (SoundManager.Instance != null && !string.IsNullOrEmpty(glitchSoundName))
+        {
+            SoundManager.Instance.PlaySound(glitchSoundName);
+        }
+
         // Increment Attempt Count
         int attempts = PlayerPrefs.GetInt("AttemptCount", 0) + 1;
         PlayerPrefs.SetInt("AttemptCount", attempts);
@@ -50,6 +74,12 @@ public class SceneLoader : MonoBehaviour
         {
              attemptText.text = $"Attempt : {attempts}";
              // We don't activate it here anymore, we pass it to the controller to clone and show
+        }
+        
+        // Play Glitch Sound
+        if (SoundManager.Instance != null && !string.IsNullOrEmpty(SFX_Glitch))
+        {
+            SoundManager.Instance.PlaySound(SFX_Glitch);
         }
 
         // Create a standalone GameObject to handle the transition logic so it survives the scene change

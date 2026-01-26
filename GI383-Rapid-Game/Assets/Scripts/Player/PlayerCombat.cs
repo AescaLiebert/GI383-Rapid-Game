@@ -109,6 +109,10 @@ public class PlayerCombat : MonoBehaviour
         
         // Start visuals immediately
         PerformAttackVisuals();
+        
+        // Play Attack Sound
+        if (SoundManager.Instance != null)
+             SoundManager.Instance.PlaySound("Player_Attack", transform.position);
 
         // FAILSAFE: If no animation event is set up, fallback to damage after a small delay? 
         // User requested "Set Event", so we assume they WILL set it.

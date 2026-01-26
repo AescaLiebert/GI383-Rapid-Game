@@ -26,6 +26,11 @@ public class WaveManager : MonoBehaviour
     [Tooltip("จำนวนศัตรูที่จะเพิ่มขึ้นในแต่ละ Wave (เช่น ใส่ 2 คือเพิ่มทีละ 2 ตัว)")]
     public int enemyCountIncrement = 2;
 
+    [Header("Audio Settings")]
+    public string gameBGM;
+    public string waveCountdownSound; // The 3 second countdown after Wave Incoming
+    public string waveIncomingSound; // While text is Wave Incoming
+
     [Header("Stat Multipliers (ตัวคูณความเก่ง)")]
     [Tooltip("เปอร์เซ็นต์เลือดที่เพิ่มขึ้นต่อ Wave (เช่น 0.1 คือเพิ่ม 10%)")]
     public float hpIncreasePercentage = 0.1f;
@@ -45,6 +50,11 @@ public class WaveManager : MonoBehaviour
         if (waveUI == null)
         {
             waveUI = FindFirstObjectByType<WaveUI>();
+        }
+
+        if (SoundManager.Instance != null && !string.IsNullOrEmpty(gameBGM))
+        {
+            SoundManager.Instance.PlayBGM(gameBGM);
         }
         
         StartCoroutine(StartNextWave());
@@ -66,12 +76,24 @@ public class WaveManager : MonoBehaviour
         // Countdown 3, 2, 1
         if (waveUI != null)
         {
+            // Start Looping SFX
+            if (SoundManager.Instance != null && !string.IsNullOrEmpty(waveCountdownSound))
+            {
+                SoundManager.Instance.PlaySFXLoop(waveCountdownSound);
+            }
+
             for (int i = 3; i > 0; i--)
             {
                 waveUI.ShowCenterText(i.ToString());
                 yield return new WaitForSeconds(1f);
             }
             waveUI.HideCenterText();
+
+            // Stop Looping SFX
+            if (SoundManager.Instance != null)
+            {
+                SoundManager.Instance.StopSFXLoop();
+            }
         }
 
         // Calculate enemies for this round
@@ -106,6 +128,8 @@ public class WaveManager : MonoBehaviour
             }
 
             // Update UI
+
+            // Update UI
             if (waveUI != null)
             {
                 waveUI.UpdateTimer(timer);
@@ -114,7 +138,14 @@ public class WaveManager : MonoBehaviour
                 if (timer <= 5.0f && timer > 0)
                 {
                     // Adding 1 to ceil makes it show 5, 4, 3, 2, 1 correctly
-                    waveUI.ShowCenterText(Mathf.CeilToInt(timer).ToString());
+                    int intTimer = Mathf.CeilToInt(timer);
+                    waveUI.ShowCenterText(intTimer.ToString());
+
+                    // Play Loop Sound
+                    if (SoundManager.Instance != null && !string.IsNullOrEmpty(waveCountdownSound))
+                    {
+                        SoundManager.Instance.PlaySFXLoop(waveCountdownSound);
+                    }
                 }
                 else
                 {
@@ -122,11 +153,19 @@ public class WaveManager : MonoBehaviour
                    if (timer > 5.0f) 
                    {
                         waveUI.HideCenterText();
+                        // Stop Sound if we are above 5s (unlikely in this loop but good safety)
+                        if (SoundManager.Instance != null) SoundManager.Instance.StopSFXLoop();
                    }
                 }
             }
 
             yield return null;
+        }
+
+        // Stop Timer Sound ensuring it doesn't persist
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.StopSFXLoop();
         }
 
         Debug.Log($"Wave {currentWave} Cleared or Time Up!");
@@ -136,6 +175,10 @@ public class WaveManager : MonoBehaviour
         {
             waveUI.UpdateTimer(0);
             waveUI.ShowCenterText("Wave Incoming");
+            if (SoundManager.Instance != null && !string.IsNullOrEmpty(waveIncomingSound))
+            {
+                SoundManager.Instance.PlaySound(waveIncomingSound);
+            }
         }
 
         // Wait before next wave

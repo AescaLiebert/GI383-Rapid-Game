@@ -13,8 +13,167 @@ MonoBehaviour:
   m_Name: MainSoundLibrary
   m_EditorClassIdentifier: Assembly-CSharp::SoundLibrary
   sounds:
-  - soundName: Test
-    clip: {fileID: 8300000, guid: ad86d8a0fd2e54a4abf04e93e80bebb0, type: 3}
+  - soundName: Player_Attack
+    clips:
+    - {fileID: 8300000, guid: 3c34a11a3bd01ef4a848f0ca891faacc, type: 3}
+    - {fileID: 8300000, guid: af93beea7a2275941a40ba03002fefbf, type: 3}
+    - {fileID: 8300000, guid: 807fb8a61b0dcd44e8a441db1af721c8, type: 3}
+    volume: 0.2
+    pitch: 1
+    pitchVariance: 0
+  - soundName: Player_Walking
+    clips:
+    - {fileID: 8300000, guid: c6c138364031c4b42b5d2047a871fa55, type: 3}
+    volume: 0.1
+    pitch: 1
+    pitchVariance: 0.2
+  - soundName: Player_Jump
+    clips:
+    - {fileID: 8300000, guid: 80f6dfec8004e0f4f87dc99c53565c53, type: 3}
+    volume: 0.2
+    pitch: 1
+    pitchVariance: 0.2
+  - soundName: Player_Land
+    clips:
+    - {fileID: 8300000, guid: 192874e07b7023144b773b3168e92c62, type: 3}
+    volume: 0.4
+    pitch: 1
+    pitchVariance: 0
+  - soundName: Player_Dash
+    clips:
+    - {fileID: 8300000, guid: e9b262cb05ae197488486242d86cc5da, type: 3}
+    volume: 0.2
+    pitch: 1
+    pitchVariance: 0.2
+  - soundName: Player_TakeDamage
+    clips:
+    - {fileID: 8300000, guid: 5591e48734f687a40823f3336a61cfa4, type: 3}
+    volume: 0.7
+    pitch: 1
+    pitchVariance: 0
+  - soundName: Player_Invisible
+    clips:
+    - {fileID: 8300000, guid: f41bfe72caa71624cbb2d368712113a7, type: 3}
+    volume: 0.4
+    pitch: 1
+    pitchVariance: 0
+  - soundName: Player_ThrowKnife
+    clips:
+    - {fileID: 8300000, guid: 431660d70c82f1845a6e16a750091628, type: 3}
+    volume: 0.4
+    pitch: 1
+    pitchVariance: 0
+  - soundName: Player_Spin
+    clips:
+    - {fileID: 8300000, guid: 44543cfabae850b4a891bd8aac7308f1, type: 3}
+    volume: 0.2
+    pitch: 1
+    pitchVariance: 0.2
+  - soundName: Player_Heal
+    clips:
+    - {fileID: 8300000, guid: 212ceb6eb6dd10b4c8965bbc6b1b6f25, type: 3}
+    volume: 0.2
+    pitch: 1
+    pitchVariance: 0.1
+  - soundName: Player_LevelUp
+    clips:
+    - {fileID: 8300000, guid: 678643fa811331f4b8849e29cd357970, type: 3}
+    volume: 0.2
+    pitch: 1
+    pitchVariance: 0.1
+  - soundName: Player_EXPCollect
+    clips:
+    - {fileID: 8300000, guid: 67d0f084ca4751e48ac3ccf726c904be, type: 3}
+    volume: 0.1
+    pitch: 1
+    pitchVariance: 0.2
+  - soundName: Enemy_Spawn
+    clips:
+    - {fileID: 8300000, guid: ec21fcc4268da164d8768eecf79f46ba, type: 3}
+    volume: 0.1
+    pitch: 1
+    pitchVariance: 0.5
+  - soundName: Enemy_Walk
+    clips:
+    - {fileID: 8300000, guid: 2fa2cef84cb5bea42b8378af5465817d, type: 3}
+    volume: 0.025
+    pitch: 1
+    pitchVariance: 0.2
+  - soundName: Enemy_Attack
+    clips:
+    - {fileID: 8300000, guid: 31cc50d17a3f4d0439c0cdafa62c82c8, type: 3}
+    - {fileID: 8300000, guid: e69f2b36553f8044d886abc0e9e43599, type: 3}
+    - {fileID: 8300000, guid: c7be5c8b5b769b04fa53ea8f4ca05930, type: 3}
+    - {fileID: 8300000, guid: d6b8f709aafdbff41944c806512d83fb, type: 3}
+    - {fileID: 8300000, guid: c5d3dcb689920694a8634ed48d0fcbc1, type: 3}
+    volume: 0.1
+    pitch: 1
+    pitchVariance: 0.1
+  - soundName: Enemy_TakeDamage
+    clips:
+    - {fileID: 8300000, guid: b3a1d801d10d6ec498ee3c78d6fbb389, type: 3}
+    - {fileID: 8300000, guid: a6959378a2833a9458632bd11b42f4f9, type: 3}
+    volume: 0.25
+    pitch: 1
+    pitchVariance: 0.1
+  - soundName: Enemy_Die
+    clips:
+    - {fileID: 8300000, guid: 0ef3bc0dd6214314ab0a5cfd56110f9f, type: 3}
+    - {fileID: 8300000, guid: bb9692fb03a30bc428ef437710a4b403, type: 3}
+    - {fileID: 8300000, guid: 031cc43a4f574f147885aa225c758ab6, type: 3}
+    volume: 0.2
+    pitch: 1
+    pitchVariance: 0.2
+  - soundName: BGM_MainMenu
+    clips:
+    - {fileID: 8300000, guid: b92b76d2558978b43b0322f5698f1860, type: 3}
+    volume: 0.1
+    pitch: 1
+    pitchVariance: 0
+  - soundName: BGM_InGame
+    clips:
+    - {fileID: 8300000, guid: 15891bd4504080a48b075ff741246a21, type: 3}
+    volume: 0.1
+    pitch: 1
+    pitchVariance: 0
+  - soundName: BGM_Ambience
+    clips: []
     volume: 1
-    pitch: 1.57
-    pitchVariance: 0.967
+    pitch: 1
+    pitchVariance: 0.5
+  - soundName: SFX_GlitchTransition
+    clips:
+    - {fileID: 8300000, guid: 68114217728e47742a9217a16194b115, type: 3}
+    volume: 0.4
+    pitch: 1
+    pitchVariance: 0.5
+  - soundName: SFX_WaveCountDown
+    clips:
+    - {fileID: 8300000, guid: 3afd5fd59d211a94faf4320cf22937b9, type: 3}
+    volume: 0.4
+    pitch: 1
+    pitchVariance: 0.2
+  - soundName: SFX_WaveStart
+    clips:
+    - {fileID: 0}
+    volume: 0.4
+    pitch: 1
+    pitchVariance: 0.2
+  - soundName: SFX_UI_Pressed
+    clips:
+    - {fileID: 8300000, guid: e3a57a63efb8a3247b7fc62309d56b51, type: 3}
+    volume: 0.4
+    pitch: 1
+    pitchVariance: 0.2
+  - soundName: SFX_UI_Cancelled
+    clips:
+    - {fileID: 8300000, guid: 609d9e39e9bcc964a93f8538f561df03, type: 3}
+    volume: 0.4
+    pitch: 1
+    pitchVariance: 0.2
+  - soundName: SFX_Glitch
+    clips:
+    - {fileID: 8300000, guid: 609d9e39e9bcc964a93f8538f561df03, type: 3}
+    volume: 0.4
+    pitch: 1
+    pitchVariance: 0.1

@@ -55,6 +55,15 @@ public class Enemy : MonoBehaviour
     private Collider2D myCollider;
     private Coroutine knockbackCoroutine;
     private System.Collections.Generic.List<Collider2D> ignoredColliders = new System.Collections.Generic.List<Collider2D>();
+    [Header("Audio Settings")]
+    public string spawnSound = "Enemy_Spawn";
+    public string walkSound = "Enemy_Walk";
+    public string attackSound = "Enemy_Attack";
+    public string takeDamageSound = "Enemy_TakeDamage";
+    public string deathSound = "Enemy_Die";
+    public float walkSoundInterval = 0.5f;
+
+    private float nextWalkSoundTime = 0f;
     private WaveManager waveManager;
 
 
@@ -79,6 +88,11 @@ public class Enemy : MonoBehaviour
 
 
         waveManager = FindFirstObjectByType<WaveManager>();
+
+        if (SoundManager.Instance != null && !string.IsNullOrEmpty(spawnSound))
+        {
+            SoundManager.Instance.PlaySound(spawnSound);
+        }
     }
 
     void FixedUpdate()
@@ -220,6 +234,13 @@ public class Enemy : MonoBehaviour
             if (faceRight) currentPos.x = Mathf.Abs(currentPos.x);
             else currentPos.x = -Mathf.Abs(currentPos.x);
             attackPoint.localPosition = currentPos;
+
+            // Play Walk Sound
+            if (SoundManager.Instance != null && !string.IsNullOrEmpty(walkSound) && Time.time >= nextWalkSoundTime)
+            {
+                SoundManager.Instance.PlaySound(walkSound, transform.position);
+                nextWalkSoundTime = Time.time + walkSoundInterval;
+            }
         }
     }
 
@@ -250,6 +271,11 @@ public class Enemy : MonoBehaviour
     {
         isAttackingFlag = true;
         currentState = EnemyState.Attacking;
+
+        if (SoundManager.Instance != null && !string.IsNullOrEmpty(attackSound))
+        {
+            SoundManager.Instance.PlaySound(attackSound, transform.position);
+        }
 
         yield return new WaitForSeconds(attackDelay);
 
@@ -365,6 +391,11 @@ public class Enemy : MonoBehaviour
 
         // Hit VFX
         SpawnHitVFX();
+        
+        if (SoundManager.Instance != null && !string.IsNullOrEmpty(takeDamageSound))
+        {
+            SoundManager.Instance.PlaySound(takeDamageSound, transform.position);
+        }
             
             // Random Scale (0.8 - 1.2 approx range to cover 0.11 if it was a typo for 1.1, assuming 0.8-1.1)
 
@@ -391,6 +422,11 @@ public class Enemy : MonoBehaviour
             Debug.Log("Playing Death Effect");
             
             Destroy(ps.gameObject, Mathf.Max(ps.main.duration, 2f)); // Increased safety buffer
+        }
+        
+        if (SoundManager.Instance != null && !string.IsNullOrEmpty(deathSound))
+        {
+            SoundManager.Instance.PlaySound(deathSound, transform.position);
         }
         
         // 1. EXP Drop (3-4 Items, 100% chance each to spawn, Splash out)

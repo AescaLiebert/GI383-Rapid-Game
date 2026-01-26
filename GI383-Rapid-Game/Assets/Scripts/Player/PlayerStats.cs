@@ -14,7 +14,7 @@ public class PlayerStats : MonoBehaviour
     [Header("Calculated Stats")]
     public int maxHP;
     public float attackDamage;
-    
+
     // Movement Stats calculated from Level
     public float CurrentMoveSpeed { get; private set; }
     public float CurrentJumpForce { get; private set; }
@@ -97,6 +97,9 @@ public class PlayerStats : MonoBehaviour
         currentHP -= damage;
         OnHealthChanged?.Invoke(currentHP);
         OnDamageTaken?.Invoke();
+        
+        if (SoundManager.Instance != null)
+             SoundManager.Instance.PlaySound("Player_TakeDamage", transform.position);
 
         if (currentHP <= 0)
         {
@@ -117,6 +120,9 @@ public class PlayerStats : MonoBehaviour
         currentHP += amount;
         if (currentHP > maxHP) currentHP = maxHP;
         OnHealthChanged?.Invoke(currentHP);
+        
+        if (SoundManager.Instance != null && amount > 0)
+             SoundManager.Instance.PlaySound("Player_Heal", transform.position);
     }
 
     public void AddXP(int amount)
@@ -127,6 +133,9 @@ public class PlayerStats : MonoBehaviour
         
         int xpToNext = GetXPToNextLevel();
         OnXPChanged?.Invoke(currentXP, xpToNext);
+        
+        if (SoundManager.Instance != null && amount > 0)
+             SoundManager.Instance.PlaySound("Player_EXPCollect", transform.position);
     }
 
     private void CheckLevelUp()
@@ -154,6 +163,9 @@ public class PlayerStats : MonoBehaviour
         OnLevelUp?.Invoke(currentLevel);
         OnHealthChanged?.Invoke(currentHP);
         
+        if (SoundManager.Instance != null)
+             SoundManager.Instance.PlaySound("Player_LevelUp", transform.position);
+        
         if (FloatingTextManager.Instance != null)
             FloatingTextManager.Instance.ShowLevelUp(transform.position + Vector3.up);
         
@@ -172,6 +184,8 @@ public class PlayerStats : MonoBehaviour
     private void Die()
     {
         OnDeath?.Invoke();
+        if (SoundManager.Instance != null)
+             SoundManager.Instance.PlaySound("Player_Death", transform.position);
     }
 
     public void SetInvincible(float duration)

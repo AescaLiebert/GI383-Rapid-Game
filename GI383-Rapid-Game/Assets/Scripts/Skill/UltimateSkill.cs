@@ -54,6 +54,9 @@ public class UltimateSkill : SkillBase
             {
                 Instantiate(ultimateEffectPrefab, attackPoint.position, attackPoint.rotation);
             }
+            
+            if (SoundManager.Instance != null)
+                 SoundManager.Instance.PlaySound("Player_Spin", player.transform.position);
 
             //  Move Forward
             float dir = player.animHandler.GetComponentInChildren<SpriteRenderer>().flipX ? 1 : -1; // Assuming default Right? Check PlayerMovement fix earlier. 

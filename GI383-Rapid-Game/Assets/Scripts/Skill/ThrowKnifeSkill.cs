@@ -45,6 +45,9 @@ public class ThrowKnifeSkill : SkillBase
             int dmg = GetLevelScaledDamage();
             // ส่งค่า Damage และทิศทางไปให้มีด
             knife.GetComponent<KnifeProjectile>().Setup(dir, speed, dmg);
+            
+            if (SoundManager.Instance != null)
+                 SoundManager.Instance.PlaySound("Player_ThrowKnife", player.transform.position);
         }
 
         // Wait for Backswing (Animation finish)

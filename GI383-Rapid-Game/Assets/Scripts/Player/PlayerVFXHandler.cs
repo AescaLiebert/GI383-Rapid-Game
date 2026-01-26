@@ -90,7 +90,7 @@ public class PlayerVFXHandler : MonoBehaviour
     private System.Collections.IEnumerator PlayLevelUpFX()
     {
         // Instantiate above player
-        Vector3 spawnPos = transform.position + new Vector3(0, -0.4f, 0); 
+        Vector3 spawnPos = transform.position + new Vector3(0, -0.5f, 0);
         GameObject vfx = Instantiate(levelUpVFXPrefab, spawnPos, Quaternion.identity, transform);
         
         // Ensure it follows player (parented) or stays? "Play when only Player level up".

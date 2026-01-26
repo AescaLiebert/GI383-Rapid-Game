@@ -21,6 +21,8 @@ public class PlayerMovement : MonoBehaviour
     [Header("Feel")]
     public float jumpStartupTime = 0.05f;
     public float landingLagTime = 0.1f;
+    public float footstepInterval = 0.4f;
+    private float footstepTimer;
     
     [Header("Physics Checks")]
     public Transform groundCheck;
@@ -137,6 +139,28 @@ public class PlayerMovement : MonoBehaviour
             // If moving left (x < 0), flipX should be true
             if (spriteRenderer != null) spriteRenderer.flipX = input.x < 0; 
         }
+            
+        // Handle Footsteps
+        if (input.x != 0 && isGrounded && !IsDashing && !IsJumping && !IsLanding)
+        {
+            footstepTimer -= Time.deltaTime;
+            if (footstepTimer <= 0)
+            {
+                if (SoundManager.Instance != null)
+                {
+                     // Ensure we are using the shorter clip logic implicitly via Random pick
+                     // For manual control, we'd need separate sound names.
+                     // But fixing the overlapping loop:
+                     SoundManager.Instance.PlaySound("Player_Walking", transform.position);
+                }
+                footstepTimer = footstepInterval;
+            }
+        }
+        else
+        {
+            // Reset timer so sound plays immediately next time we walk
+             footstepTimer = 0;
+        }
 
 
         // Trigger Run Event
@@ -182,13 +206,11 @@ public class PlayerMovement : MonoBehaviour
             // Landing Logic
             if (isGrounded && rb.linearVelocity.y <= 0.1f)
             {
-                StartCoroutine(LandingCoroutine());
-            }
-            OnGroundedChanged?.Invoke(isGrounded);
-            
-            // Landing Logic
-            if (isGrounded && rb.linearVelocity.y <= 0.1f)
-            {
+                if (SoundManager.Instance != null)
+                {
+                    SoundManager.Instance.PlaySound("Player_Land", transform.position);
+                }
+                
                 OnLand?.Invoke(); // Fire Landing Event
                 StartCoroutine(LandingCoroutine());
             }
@@ -206,6 +228,10 @@ public class PlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(jumpStartupTime);
         
         ignoreCollisionJump = true;
+        
+        if (SoundManager.Instance != null)
+             SoundManager.Instance.PlaySound("Player_Jump", transform.position);
+             
         rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
         
         IsJumping = false;
@@ -232,6 +258,9 @@ public class PlayerMovement : MonoBehaviour
         canDash = false;
         CanMove = false; // Disable movement explicitely
         OnDashStart?.Invoke();
+        
+        if (SoundManager.Instance != null)
+             SoundManager.Instance.PlaySound("Player_Dash", transform.position);
         
         if (stats != null) stats.SetInvincible(dashDuration + 0.35f); // Duration + buffer (User modified this recently)
 
