@@ -396,7 +396,7 @@ public class Enemy : MonoBehaviour
         // 1. EXP Drop (3-4 Items, 100% chance each to spawn, Splash out)
         if (itemDropPrefab != null)
         {
-            int dropCount = Random.Range(3, 5); // 3 or 4
+            int dropCount = Random.Range(5, 7); // 3 or 4
             
             int wave = (waveManager != null) ? waveManager.CurrentWave : 1;
             // Calculus logic: Exponential Growth

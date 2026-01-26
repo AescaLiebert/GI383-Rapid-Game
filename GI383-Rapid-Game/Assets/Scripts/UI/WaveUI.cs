@@ -6,6 +6,15 @@ public class WaveUI : MonoBehaviour
     [Header("Wave UI Elements")]
     public TextMeshProUGUI timerText;
     public TextMeshProUGUI centerText; // Used for "Wave Incoming" AND Countdown
+    public TextMeshProUGUI waveCountText; // Shows current wave number
+
+    public void UpdateWaveCount(int wave)
+    {
+        if (waveCountText != null)
+        {
+            waveCountText.text = wave.ToString();
+        }
+    }
 
     public void UpdateTimer(float timeRemaining)
     {

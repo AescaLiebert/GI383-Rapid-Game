@@ -59,6 +59,7 @@ public class WaveManager : MonoBehaviour
 
         if (waveUI != null)
         {
+            waveUI.UpdateWaveCount(currentWave);
             waveUI.HideCenterText();
         }
 

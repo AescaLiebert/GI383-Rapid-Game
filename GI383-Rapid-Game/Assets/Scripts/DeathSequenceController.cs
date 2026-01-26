@@ -28,7 +28,7 @@ public class DeathSequenceController : MonoBehaviour
     [Header("Settings")]
     public float flickerDuration = 0.5f;
     public float flickerSpeed = 0.05f;
-    public float delayBeforeButton = 3.0f; // Time to wait after video starts before showing restart button
+    public float delayBeforeButton = 10.0f; // Time to wait after video starts before showing restart button
 
     public void StartDeathSequence()
     {

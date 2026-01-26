@@ -66,7 +66,7 @@ public class UltimateSkill : SkillBase
             // So: flipX ? -1 : 1.
             dir = player.animHandler.GetComponentInChildren<SpriteRenderer>().flipX ? -1f : 1f;
 
-            player.transform.Translate(Vector2.right * dir * 2f);
+            player.transform.Translate(Vector2.right * dir * 1.5f);
 
             //  Find Enemies
             Collider2D[] enemies = Physics2D.OverlapBoxAll(player.transform.position, hitBoxSize, 0, enemyLayer);

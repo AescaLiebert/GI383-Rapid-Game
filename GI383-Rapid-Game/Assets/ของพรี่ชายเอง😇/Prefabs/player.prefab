@@ -46,9 +46,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UltimateSkill
   skillName: UltimateSkill
   baseCooldown: 30
-  baseDamage: 10
-  hitCount: 4
-  interval: 1
+  baseDamage: 3
+  hitCount: 8
+  interval: 0.4
   hitBoxSize: {x: 5, y: 3}
   enemyLayer:
     serializedVersion: 2
@@ -149,7 +149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InvisibleSkill
   skillName: InvisibleSkill
-  baseCooldown: 10
+  baseCooldown: 15
   baseDamage: 0
   duration: 4
 --- !u!1 &3456871501858616214
@@ -164,6 +164,7 @@ GameObject:
   - component: {fileID: 6377066692844491844}
   - component: {fileID: 6600188941310721052}
   - component: {fileID: 5068798777563576918}
+  - component: {fileID: 7206713829059665955}
   m_Layer: 0
   m_Name: TextureCamera
   m_TagString: Untagged
@@ -289,6 +290,24 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3456871501858616214}
   m_Enabled: 1
+--- !u!114 &7206713829059665955
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3456871501858616214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c37954c9cd7143479550766ad710ec6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraFollow
+  target: {fileID: 2444777215796051656}
+  offset: {x: 0, y: 2.5, z: -35}
+  smoothSpeed: 1
+  enableBounds: 1
+  minPosition: {x: -45, y: -6.5}
+  maxPosition: {x: 45, y: 10}
 --- !u!1 &7234240371709086105
 GameObject:
   m_ObjectHideFlags: 0
@@ -431,11 +450,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraFollow
   target: {fileID: 2444777215796051656}
-  offset: {x: 0, y: 1.5, z: -35}
+  offset: {x: 0, y: 2.5, z: -35}
   smoothSpeed: 1
   enableBounds: 1
-  minPosition: {x: -39.5, y: -5}
-  maxPosition: {x: 39.5, y: 10}
+  minPosition: {x: -45, y: -6.5}
+  maxPosition: {x: 45, y: 10}
 --- !u!1 &8470975355703077009
 GameObject:
   m_ObjectHideFlags: 0
@@ -462,7 +481,7 @@ Transform:
   m_GameObject: {fileID: 8470975355703077009}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.35, z: 0}
+  m_LocalPosition: {x: 0, y: 0.05, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -485,10 +504,10 @@ MonoBehaviour:
   m_BlendStyleIndex: 1
   m_FalloffIntensity: 0.5
   m_Color: {r: 1, g: 0.8160377, b: 0.94432724, a: 1}
-  m_Intensity: 0.05
+  m_Intensity: 0.2
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
-  m_ApplyToSortingLayers: 000000005b86b3cd51d4941c8b46451ab35e89df79a954c31172eadaa7c8fd5d
+  m_ApplyToSortingLayers: 000000005b86b3cd51d4941c8b46451ab35e89df79a954c31172eada
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -958,7 +977,7 @@ Transform:
   m_GameObject: {fileID: 9135853940479833697}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalPosition: {x: 0, y: -1.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

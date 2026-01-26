@@ -19,10 +19,15 @@ public class CameraFollow : MonoBehaviour
     private float shakeTimer;
     private float shakeMagnitude;
 
+    private Vector3 logicalPosition; // The position without shake
+
     void Start()
     {
         cam = GetComponent<Camera>();
         
+        // Initialize logical position
+        logicalPosition = transform.position;
+
         // Try to find the player immediately on start
         if (target == null)
         {
@@ -71,17 +76,20 @@ public class CameraFollow : MonoBehaviour
             desiredPosition = new Vector3(clampedX, clampedY, desiredPosition.z);
         }
 
-        // Smoothly interpolate towards the desired position
-        Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
+        // Smoothly interpolate towards the desired position (Logical Position)
+        logicalPosition = Vector3.Lerp(logicalPosition, desiredPosition, smoothSpeed);
+        
+        // Apply Shake on top of Logical Position
+        Vector3 finalPosition = logicalPosition;
 
         if (shakeTimer > 0)
         {
             Vector3 shakeOffset = Random.insideUnitCircle * shakeMagnitude;
-            smoothedPosition += shakeOffset;
+            finalPosition += shakeOffset;
             shakeTimer -= Time.unscaledDeltaTime;
         }
 
-        transform.position = smoothedPosition;
+        transform.position = finalPosition;
     }
 
     public void TriggerShake(float duration, float magnitude)
