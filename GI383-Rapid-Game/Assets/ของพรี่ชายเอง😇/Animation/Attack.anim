@@ -21,7 +21,17 @@ AnimationClip:
   - serializedVersion: 2
     curve:
     - time: 0
-      value: {fileID: 4031379872167525181, guid: 27a2ee20c0d78dc46969077f464116bb, type: 3}
+      value: {fileID: -1680370237592932325, guid: 52b57eb49ab843a4e87c7375b391c5ad, type: 3}
+    - time: 0.083333336
+      value: {fileID: 1531494394449641125, guid: 52b57eb49ab843a4e87c7375b391c5ad, type: 3}
+    - time: 0.16666667
+      value: {fileID: -4053851859885701402, guid: 52b57eb49ab843a4e87c7375b391c5ad, type: 3}
+    - time: 0.25
+      value: {fileID: 5360517085855853057, guid: 52b57eb49ab843a4e87c7375b391c5ad, type: 3}
+    - time: 0.33333334
+      value: {fileID: -4960283144979303888, guid: 52b57eb49ab843a4e87c7375b391c5ad, type: 3}
+    - time: 0.41666666
+      value: {fileID: -8965017545281657762, guid: 52b57eb49ab843a4e87c7375b391c5ad, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -44,13 +54,18 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     pptrCurveMapping:
-    - {fileID: 4031379872167525181, guid: 27a2ee20c0d78dc46969077f464116bb, type: 3}
+    - {fileID: -1680370237592932325, guid: 52b57eb49ab843a4e87c7375b391c5ad, type: 3}
+    - {fileID: 1531494394449641125, guid: 52b57eb49ab843a4e87c7375b391c5ad, type: 3}
+    - {fileID: -4053851859885701402, guid: 52b57eb49ab843a4e87c7375b391c5ad, type: 3}
+    - {fileID: 5360517085855853057, guid: 52b57eb49ab843a4e87c7375b391c5ad, type: 3}
+    - {fileID: -4960283144979303888, guid: 52b57eb49ab843a4e87c7375b391c5ad, type: 3}
+    - {fileID: -8965017545281657762, guid: 52b57eb49ab843a4e87c7375b391c5ad, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.016666668
+    m_StopTime: 0.43333334
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -69,4 +84,11 @@ AnimationClip:
   m_EulerEditorCurves: []
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
-  m_Events: []
+  m_Events:
+  - time: 0.1
+    functionName: TriggerMeleeAttack
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0

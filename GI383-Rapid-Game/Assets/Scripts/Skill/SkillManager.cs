@@ -76,6 +76,9 @@ public class SkillManager : MonoBehaviour
 
     public void TryUseSkill(int slotIndex)
     {
+        // Prevent skill use if stunned
+        if (player.stats != null && player.stats.IsHit) return;
+
         SkillBase targetSkill = null;
         switch (slotIndex)
         {

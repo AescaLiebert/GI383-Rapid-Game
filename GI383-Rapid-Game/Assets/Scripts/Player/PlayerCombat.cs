@@ -8,7 +8,7 @@ public class PlayerCombat : MonoBehaviour
     public Transform attackPoint;
     public Vector2 attackArea = new Vector2(1f, 0.5f);
     public LayerMask enemyLayers;
-    public GameObject attackEffectPrefab;
+    // Removed attackEffectPrefab
     
     [Header("Combat Stats")]
     public float attackCooldown = 0.5f;
@@ -18,8 +18,7 @@ public class PlayerCombat : MonoBehaviour
     public float attackDuration = 0.2f; // Player animation lock duration
 
     [Header("Weapons (Deprecated/Secondary)")]
-    // Keeping references just in case, or for secondary weapons like Knife
-    public Weapon knifeWeapon;
+    // Removed knifeWeapon
     
     // Dependencies
     public PlayerStats stats;
@@ -27,13 +26,14 @@ public class PlayerCombat : MonoBehaviour
 
     [Header("States")]
     public bool IsAttacking { get; private set; }
-    public bool IsShooting { get; private set; }
+    public bool IsThrowingKnife { get; set; } // Set by ThrowKnifeSkill
+    public bool IsUsingUltimate { get; set; } // Set by UltimateSkill
 
     // Events
     public event Action OnAttackStart;
     public event Action OnAttackEnd;
-    public event Action OnShootStart;
-    public event Action OnShootEnd;
+    // Removed OnShootStart, OnShootEnd
+    public event Action OnSkillEventTriggered; // Bridge Event for External Skills
 
     private float nextAttackTime = 0f;
 
@@ -48,10 +48,10 @@ public class PlayerCombat : MonoBehaviour
         // Handle Attack Direction Visuals (AttackPoint rotation)
         if (attackPoint != null && movement != null && movement.spriteRenderer != null)
         {
-            // PlayerMovement: flipX = input.x > 0 (Right). 
-            // So flipX (True) means Facing Right.
+            // PlayerMovement: flipX = true (Left), flipX = false (Right - default)
             
-            float dir = movement.spriteRenderer.flipX ? 1f : -1f;
+            // If flipX is true (Left), dir is -1. Else 1.
+            float dir = movement.spriteRenderer.flipX ? -1f : 1f;
             
             // Flip Position (X) based on local relative
             Vector3 pos = attackPoint.localPosition;
@@ -60,7 +60,7 @@ public class PlayerCombat : MonoBehaviour
 
             // Flip Rotation (Y) - 0 is Right, 180 is Left
             Vector3 rot = attackPoint.localEulerAngles;
-            rot.y = movement.spriteRenderer.flipX ? 0f : 180f;
+            rot.y = movement.spriteRenderer.flipX ? 180f : 0f;
             attackPoint.localEulerAngles = rot;
         }
     }
@@ -73,23 +73,29 @@ public class PlayerCombat : MonoBehaviour
         }
     }
 
-    public void Shoot()
-    {
-        if (CanShoot())
-        {
-            StartCoroutine(ShootCoroutine());
-        }
-    }
+
 
     private bool CanAttack()
     {
-        return Time.time >= nextAttackTime && !IsAttacking && !IsShooting && !movement.IsDashing && !movement.IsLanding; 
+        bool isGrounded = movement != null && movement.IsGrounded();
+        bool isHit = stats != null && stats.IsHit;
+        
+        // Block attack if:
+        // 1. Cooldown not ready
+        // 2. Already acting
+        // 3. Dashing/Landing
+        // 4. In Air (Not Grounded)
+        // 5. Stunned (IsHit)
+        return Time.time >= nextAttackTime 
+            && !IsAttacking 
+            && !IsThrowingKnife
+            && !movement.IsDashing 
+            && !movement.IsLanding
+            && isGrounded // Must be on ground to attack
+            && !isHit;    // Cannot attack while stunned
     }
 
-    private bool CanShoot()
-    {
-        return knifeWeapon != null && !IsAttacking && !IsShooting && !movement.IsDashing && !movement.IsLanding;
-    }
+    // Removed CanShoot
 
     private IEnumerator AttackCoroutine()
     {
@@ -100,8 +106,14 @@ public class PlayerCombat : MonoBehaviour
         if (movement != null) movement.CanMove = false;
         
         OnAttackStart?.Invoke();
+        
+        // Start visuals immediately
+        PerformAttackVisuals();
 
-        PerformMeleeAttack();
+        // FAILSAFE: If no animation event is set up, fallback to damage after a small delay? 
+        // User requested "Set Event", so we assume they WILL set it.
+        // However, if they don't, the attack does nothing. 
+        // For now, we strictly respect the requested architecture: Damage is triggered by event.
 
         yield return new WaitForSeconds(attackDuration);
         
@@ -110,18 +122,19 @@ public class PlayerCombat : MonoBehaviour
         OnAttackEnd?.Invoke();
     }
 
-    private void PerformMeleeAttack()
+    private void PerformAttackVisuals()
+    {
+         if (attackPoint == null) return;
+         // Removed attackEffectPrefab instantiation
+    }
+
+    // THIS METHOD MUST BE CALLED BY ANIMATION EVENT
+    public void TriggerMeleeAttack()
     {
         if (attackPoint == null)
         {
             Debug.LogWarning("AttackPoint is not assigned in PlayerCombat!");
             return;
-        }
-
-        // 1. Visual Effect
-        if (attackEffectPrefab != null)
-        {
-            Instantiate(attackEffectPrefab, attackPoint.position, attackPoint.rotation);
         }
 
         // 2. Detect Enemies (AoE)
@@ -148,31 +161,21 @@ public class PlayerCombat : MonoBehaviour
         }
     }
 
-    private IEnumerator ShootCoroutine()
+    // Bridge Method for External Skills (Animation Event calls this)
+    public void TriggerSkillEvent()
     {
-        IsShooting = true;
-        if (movement != null) movement.CanMove = false;
-        OnShootStart?.Invoke();
-        
-        if (knifeWeapon != null)
-        {
-            knifeWeapon.Attack();
-            yield return new WaitForSeconds(knifeWeapon.attackDuration);
-        }
-
-        if (movement != null) movement.CanMove = true;
-        IsShooting = false;
-        OnShootEnd?.Invoke();
+        OnSkillEventTriggered?.Invoke();
     }
+
+    // Removed ShootCoroutine
 
     // Called by InputHandler via SendMessage or direct call
     public void PerformAttack() => Attack();
-    public void PerformShoot() => Shoot();
+    // Removed PerformShoot
     
     public void TurnWeapons(bool facingRight)
     {
-        // Deprecated for primary weapon, but useful if we keep secondary logic
-        if (knifeWeapon != null) knifeWeapon.Turn(facingRight);
+        // Removed knifeWeapon.Turn
     }
 
     void OnDrawGizmosSelected()

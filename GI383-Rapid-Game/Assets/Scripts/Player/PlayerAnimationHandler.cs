@@ -23,12 +23,27 @@ public class PlayerAnimationHandler : MonoBehaviour
 
     private void UpdateAnimationState()
     {
+        if (stats != null && stats.IsDead)
+        {
+            anim.SetBool("IsDie", true);
+            // Disable all other states
+            anim.SetBool("IsTakeDamage", false);
+            anim.SetBool("IsJump", false);
+            anim.SetBool("IsAttack", false);
+            anim.SetBool("IsThrowKnife", false);
+            anim.SetBool("IsDash", false);
+            anim.SetBool("IsIdle", false);
+            anim.SetBool("IsWalk", false);
+            anim.SetBool("IsUltimate", false);
+            return;
+        }
+
         if (stats != null && stats.IsHit)
         {
             anim.SetBool("IsTakeDamage", true);
             anim.SetBool("IsJump", false);
             anim.SetBool("IsAttack", false);
-            anim.SetBool("IsShoot", false);
+            // Removed IsShoot
             anim.SetBool("IsDash", false);
             anim.SetBool("IsIdle", false);
             anim.SetBool("IsWalk", false);
@@ -40,16 +55,18 @@ public class PlayerAnimationHandler : MonoBehaviour
         }
 
         bool isAttacking = combat != null && combat.IsAttacking;
-        bool isShooting = combat != null && combat.IsShooting;
+        bool isThrowing = combat != null && combat.IsThrowingKnife;
         bool isDashing = movement != null && movement.IsDashing;
         bool isGrounded = movement != null && movement.IsGrounded();
+        bool isUltimate = combat != null && combat.IsUsingUltimate;
 
         anim.SetBool("IsAttack", isAttacking);
-        anim.SetBool("IsShoot", isShooting);
+        anim.SetBool("IsThrowKnife", isThrowing);
         anim.SetBool("IsDash", isDashing);
+        anim.SetBool("IsUltimate", isUltimate);
 
         // Priority Logic similar to Player.cs
-        if (isAttacking || isShooting || isDashing)
+        if (isAttacking || isDashing || isUltimate || isThrowing)
         {
             anim.SetBool("IsJump", false);
             anim.SetBool("IsWalk", false);
@@ -57,6 +74,11 @@ public class PlayerAnimationHandler : MonoBehaviour
         }
         else
         {
+            // Pass Vertical Velocity for Jump/Fall transition
+            if (movement.GetComponent<Rigidbody2D>() != null)
+            {
+                anim.SetFloat("VerticalVelocity", movement.GetComponent<Rigidbody2D>().linearVelocity.y);
+            }
             anim.SetBool("IsJump", !isGrounded);
 
             if (isGrounded)

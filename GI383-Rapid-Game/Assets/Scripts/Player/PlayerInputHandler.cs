@@ -24,7 +24,7 @@ public class PlayerInputHandler : MonoBehaviour
         }
     }
 
-    private enum BufferedInput { None, Jump, Dash, Attack, Shoot }
+    private enum BufferedInput { None, Jump, Dash, Attack }
     private BufferedInput bufferedInput = BufferedInput.None;
 
     void OnEnable()
@@ -37,7 +37,6 @@ public class PlayerInputHandler : MonoBehaviour
         if (combat != null)
         {
             combat.OnAttackEnd += TryExecuteBufferedInput;
-            combat.OnShootEnd += TryExecuteBufferedInput;
         }
     }
 
@@ -51,7 +50,6 @@ public class PlayerInputHandler : MonoBehaviour
         if (combat != null)
         {
             combat.OnAttackEnd -= TryExecuteBufferedInput;
-            combat.OnShootEnd -= TryExecuteBufferedInput;
         }
     }
 
@@ -60,9 +58,11 @@ public class PlayerInputHandler : MonoBehaviour
         bool dashing = movement != null && movement.IsDashing;
         bool landing = movement != null && movement.IsLanding;
         bool attacking = combat != null && combat.IsAttacking;
-        bool shooting = combat != null && combat.IsShooting;
+        bool throwing = combat != null && combat.IsThrowingKnife;
+        bool isHit = combat != null && combat.stats != null && combat.stats.IsHit;
+        bool isDead = combat != null && combat.stats != null && combat.stats.IsDead;
 
-        return dashing || landing || attacking || shooting;
+        return dashing || landing || attacking || throwing || isHit || isDead;
     }
 
     private void TryExecuteBufferedInput()
@@ -89,10 +89,7 @@ public class PlayerInputHandler : MonoBehaviour
                 if (combat != null) combat.Attack();
                 else SendMessage("PerformAttack", SendMessageOptions.DontRequireReceiver);
                 break;
-            case BufferedInput.Shoot:
-                if (combat != null) combat.Shoot();
-                else SendMessage("PerformShoot", SendMessageOptions.DontRequireReceiver);
-                break;
+            // Removed BufferedInput.Shoot case
         }
         bufferedInput = BufferedInput.None;
     }

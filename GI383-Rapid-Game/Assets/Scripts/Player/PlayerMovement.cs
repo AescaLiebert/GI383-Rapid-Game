@@ -120,15 +120,11 @@ public class PlayerMovement : MonoBehaviour
             // If we are strictly locked, don't move X. 
             // NOTE: IsJumping corresponds to 'isJumpStarting' in original code (startup frames).
             // Normal air movement is usually allowed unless designed otherwise.
-            if (IsJumping || IsLanding) 
-            {
-                 // Keep existing velocity x or zero? Original code zeroed logic in FixedUpdate if locked.
-                 // We will match original: "Disable movement if JumpStarting or Landing"
-                 rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
-                 return;
-            }
-            
-            if (IsDashing) return; // Dash controls velocity itself
+
+            // FIX: Ensure we actually STOP if CanMove is false (e.g. attacking on ground)
+            // But we might want to keep Y velocity (gravity)
+            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+            return;
         }
 
         // Apply movement
@@ -137,12 +133,9 @@ public class PlayerMovement : MonoBehaviour
         // Flip sprite
         if (input.x != 0)
         {
-            if (spriteRenderer != null) spriteRenderer.flipX = input.x < 0; // Assuming right is positive
-            // Original code: spriteRenderer.flipX = moveInput.x > 0; -> This means Right (>0) makes flipX true?
-            // Usually sprite faces Right by default. flipX=true makes it face Left.
-            // Original: moveInput.x > 0 (Right) -> flipX = true. So default sprite faces Left?
-            // Let's stick to original logic:
-            if (spriteRenderer != null) spriteRenderer.flipX = input.x > 0;
+            // Assuming default sprite faces Right
+            // If moving left (x < 0), flipX should be true
+            if (spriteRenderer != null) spriteRenderer.flipX = input.x < 0; 
         }
 
 
@@ -246,7 +239,8 @@ public class PlayerMovement : MonoBehaviour
         rb.gravityScale = 0;
         
         float dir = 1f;
-        if (spriteRenderer != null) dir = spriteRenderer.flipX ? 1f : -1f;
+        // If flipX is true (Left), direction is -1. If flipX is false (Right), direction is 1.
+        if (spriteRenderer != null) dir = spriteRenderer.flipX ? -1f : 1f;
 
         StartCoroutine(ShowGhosts());
 

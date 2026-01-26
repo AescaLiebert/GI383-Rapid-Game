@@ -39,6 +39,7 @@ public class PlayerStats : MonoBehaviour
     }
 
     public bool IsHit { get; private set; }
+    public bool IsDead => currentHP <= 0;
     public float hitStunTime = 0.2f;
     private float hitStunTimer = 0f;
 

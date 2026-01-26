@@ -10,6 +10,8 @@ public class PlayerVFXHandler : MonoBehaviour
     [Header("Effects")]
     public ParticleSystem dustEffect;
     public ParticleSystem hitParticle;
+    [Header("Level Up")]
+    public GameObject levelUpVFXPrefab;
 
     void Start()
     {
@@ -26,6 +28,7 @@ public class PlayerVFXHandler : MonoBehaviour
         if (stats != null)
         {
             stats.OnDamageTaken += PlayHitEffect;
+            stats.OnLevelUp += OnLevelUp;
         }
 
         playerCollider = GetComponent<Collider2D>();
@@ -43,6 +46,7 @@ public class PlayerVFXHandler : MonoBehaviour
         if (stats != null)
         {
             stats.OnDamageTaken -= PlayHitEffect;
+            stats.OnLevelUp -= OnLevelUp;
         }
     }
 
@@ -73,5 +77,27 @@ public class PlayerVFXHandler : MonoBehaviour
             
             Destroy(ps.gameObject, Mathf.Max(ps.main.duration, 0.5f));
         }
+    }
+
+    private void OnLevelUp(int newLevel)
+    {
+        if (levelUpVFXPrefab != null)
+        {
+            StartCoroutine(PlayLevelUpFX());
+        }
+    }
+
+    private System.Collections.IEnumerator PlayLevelUpFX()
+    {
+        // Instantiate above player
+        Vector3 spawnPos = transform.position + new Vector3(0, -0.4f, 0); 
+        GameObject vfx = Instantiate(levelUpVFXPrefab, spawnPos, Quaternion.identity, transform);
+        
+        // Ensure it follows player (parented) or stays? "Play when only Player level up".
+        // Usually level up follows.
+
+        yield return new WaitForSeconds(1f); // Duration
+
+        if (vfx != null) Destroy(vfx);
     }
 }
