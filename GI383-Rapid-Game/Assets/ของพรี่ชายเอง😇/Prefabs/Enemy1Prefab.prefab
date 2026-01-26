@@ -160,6 +160,7 @@ GameObject:
   - component: {fileID: 1433725132842515138}
   - component: {fileID: 1782460008279112897}
   - component: {fileID: -185897100427839236}
+  - component: {fileID: -2357427663376923665}
   m_Layer: 6
   m_Name: Enemy1Prefab
   m_TagString: Enemy
@@ -176,8 +177,8 @@ Transform:
   m_GameObject: {fileID: 6698984400229986755}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0.3135, y: 0.3141, z: 0}
+  m_LocalScale: {x: 1.2454, y: 1.2454, z: 1.2454}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5034234761203153753}
@@ -234,7 +235,7 @@ SpriteRenderer:
   m_SortingLayer: 5
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: ae461a0bfc95d0e47ab5175ce0c9d11b, type: 3}
+  m_Sprite: {fileID: 607412717719830977, guid: 909e46df2d358b34c81051d943aa529d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0
@@ -337,7 +338,6 @@ MonoBehaviour:
   damage: 1
   attackPoint: {fileID: 241974018674737415}
   attackArea: {x: 1.7, y: 2.16}
-  slash: {fileID: 7461607183011662884, guid: d74bb0a32e99661408211ffd2c0f76d3, type: 3}
   itemDropPrefab: {fileID: 1595820753878120275, guid: 3e98a5121867aa44ca355613c2b3cb1e, type: 3}
   minXP: 10
   maxXP: 20
@@ -356,3 +356,25 @@ SortingGroup:
   m_SortingOrder: 0
   m_SortAtRoot: 0
   m_Sort3DAs2D: 0
+--- !u!95 &-2357427663376923665
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6698984400229986755}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d423685d199b85e448ce04f53389e25f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

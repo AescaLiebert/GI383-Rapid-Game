@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.Rendering;
+
 public class Enemy : MonoBehaviour
 {
     [Header("Stats")]
@@ -35,7 +36,7 @@ public class Enemy : MonoBehaviour
     public int damage = 10;
     public Transform attackPoint;
     public Vector2 attackArea = new Vector2(1f, 0.5f);
-    public GameObject slash;
+    
 
     [Header("Drops")]
     public GameObject itemDropPrefab;
@@ -45,6 +46,8 @@ public class Enemy : MonoBehaviour
     [Header("VFX")]
     public ParticleSystem hitParticlePrefab;
     public ParticleSystem deathEffectPrefab;
+
+    private Animator anim;
 
     // private bool isKnockedBack = false; // Removed in favor of State
 
@@ -60,6 +63,8 @@ public class Enemy : MonoBehaviour
 
     void Start()
     {
+
+        anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -121,6 +126,11 @@ public class Enemy : MonoBehaviour
         if (transform.position.y < -100)
         {
             Destroy(gameObject);
+        }
+
+        if (anim != null)
+        {
+            anim.SetFloat("Speed", Mathf.Abs(rb.linearVelocity.x));
         }
     }
 
@@ -195,6 +205,12 @@ public class Enemy : MonoBehaviour
     void HandleStunned()
     {
         StopMoving();
+
+        if (anim != null)
+        {
+            anim.SetFloat("Speed", 0);
+                       
+        }
         stunTimer -= Time.deltaTime;
         if (stunTimer <= 0)
         {
@@ -251,21 +267,12 @@ public class Enemy : MonoBehaviour
         isAttackingFlag = true;
         currentState = EnemyState.Attacking;
 
+
+        if (anim != null) anim.SetTrigger("isAttacking");
         yield return new WaitForSeconds(attackDelay);
 
         if (currentState != EnemyState.Stunned && currentState != EnemyState.KnockedBack && hp > 0) 
         {
-            if (slash != null)
-            {
-                GameObject currentSlash = Instantiate(slash, attackPoint.position, attackPoint.rotation);
-                if (spriteRenderer.flipX)
-                {
-                    Vector3 newScale = currentSlash.transform.localScale;
-                    newScale.x *= 1; 
-                    newScale.y *= -1; 
-                    currentSlash.transform.localScale = newScale;
-                }
-            }
 
             // Hit Check
             if (player != null && !playerScript.IsInvisible)
@@ -304,6 +311,8 @@ public class Enemy : MonoBehaviour
     
     public void TakeDamage(float damage, bool applyKnockback)
     {
+
+        
         if (applyKnockback)
         {
              TakeDamage(damage, Vector2.zero, 0.1f);
@@ -480,7 +489,8 @@ public class Enemy : MonoBehaviour
     IEnumerator KnockedBackRoutine(Vector2 force, float stunDuration)
     {
         currentState = EnemyState.KnockedBack;
-        
+
+
         // Ignore collision with other enemies to prevent getting stuck
         if (myCollider != null)
         {
@@ -524,7 +534,9 @@ public class Enemy : MonoBehaviour
             failsafeTimer += Time.deltaTime;
             yield return null;
         }
+
         
+
         // Landed! Now apply Stun
         currentState = EnemyState.Idle; // Reset state temporarily so ApplyStun works
         spriteRenderer.color = originalColor; 
