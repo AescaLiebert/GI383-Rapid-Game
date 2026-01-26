@@ -54,6 +54,7 @@ MonoBehaviour:
   - soundName: Player_Invisible
     clips:
     - {fileID: 8300000, guid: f41bfe72caa71624cbb2d368712113a7, type: 3}
+    - {fileID: 8300000, guid: c9d1f367cbae0914ca9fd05363be38ea, type: 3}
     volume: 0.4
     pitch: 1
     pitchVariance: 0
@@ -118,10 +119,9 @@ MonoBehaviour:
     pitchVariance: 0.1
   - soundName: Enemy_Die
     clips:
-    - {fileID: 8300000, guid: 0ef3bc0dd6214314ab0a5cfd56110f9f, type: 3}
-    - {fileID: 8300000, guid: bb9692fb03a30bc428ef437710a4b403, type: 3}
     - {fileID: 8300000, guid: 031cc43a4f574f147885aa225c758ab6, type: 3}
-    volume: 0.2
+    - {fileID: 8300000, guid: bb9692fb03a30bc428ef437710a4b403, type: 3}
+    volume: 0.3
     pitch: 1
     pitchVariance: 0.2
   - soundName: BGM_MainMenu
@@ -144,7 +144,7 @@ MonoBehaviour:
   - soundName: SFX_GlitchTransition
     clips:
     - {fileID: 8300000, guid: 68114217728e47742a9217a16194b115, type: 3}
-    volume: 0.4
+    volume: 1
     pitch: 1
     pitchVariance: 0.5
   - soundName: SFX_WaveCountDown
@@ -155,7 +155,7 @@ MonoBehaviour:
     pitchVariance: 0.2
   - soundName: SFX_WaveStart
     clips:
-    - {fileID: 0}
+    - {fileID: 8300000, guid: 2be3eca7128ab1a42b2fa9552905459b, type: 3}
     volume: 0.4
     pitch: 1
     pitchVariance: 0.2
@@ -174,6 +174,6 @@ MonoBehaviour:
   - soundName: SFX_Glitch
     clips:
     - {fileID: 8300000, guid: 609d9e39e9bcc964a93f8538f561df03, type: 3}
-    volume: 0.4
+    volume: 1
     pitch: 1
     pitchVariance: 0.1

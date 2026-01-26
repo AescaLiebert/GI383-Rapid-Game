@@ -65,6 +65,7 @@ public class Enemy : MonoBehaviour
 
     private float nextWalkSoundTime = 0f;
     private WaveManager waveManager;
+    private Animator animator;
 
 
     void Start()
@@ -88,6 +89,7 @@ public class Enemy : MonoBehaviour
 
 
         waveManager = FindFirstObjectByType<WaveManager>();
+        animator = GetComponent<Animator>();
 
         if (SoundManager.Instance != null && !string.IsNullOrEmpty(spawnSound))
         {
@@ -130,6 +132,8 @@ public class Enemy : MonoBehaviour
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
         }
+
+        UpdateAnimation();
 
         // Check if fallen out of map
         if (transform.position.y < -100)
@@ -267,42 +271,72 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    IEnumerator AttackRoutine()
-    {
-        isAttackingFlag = true;
-        currentState = EnemyState.Attacking;
+    [Header("Animation Settings")]
+    public float attackStateDuration = 0.8f; // How long we stay in "Attacking" state
+    public bool useAnimationEvent = true;   // If false, uses the old timer logic
 
+    public void TriggerAttack()
+    {
+        // This method is called by the Animation Event "TriggerAttack"
+        if (currentState == EnemyState.Stunned || currentState == EnemyState.KnockedBack || hp <= 0) return;
+
+        PerformAttackLogic();
+    }
+
+    private void PerformAttackLogic()
+    {
         if (SoundManager.Instance != null && !string.IsNullOrEmpty(attackSound))
         {
             SoundManager.Instance.PlaySound(attackSound, transform.position);
         }
 
-        yield return new WaitForSeconds(attackDelay);
-
-        if (currentState != EnemyState.Stunned && currentState != EnemyState.KnockedBack && hp > 0) 
+        if (slash != null)
         {
-            if (slash != null)
+            GameObject currentSlash = Instantiate(slash, attackPoint.position, attackPoint.rotation);
+            if (spriteRenderer.flipX)
             {
-                GameObject currentSlash = Instantiate(slash, attackPoint.position, attackPoint.rotation);
-                if (spriteRenderer.flipX)
-                {
-                    Vector3 newScale = currentSlash.transform.localScale;
-                    newScale.x *= 1; 
-                    newScale.y *= -1; 
-                    currentSlash.transform.localScale = newScale;
-                }
+                Vector3 newScale = currentSlash.transform.localScale;
+                newScale.x *= 1; 
+                newScale.y *= -1; 
+                currentSlash.transform.localScale = newScale;
             }
+        }
 
-            // Hit Check
-            if (player != null && !playerScript.IsInvisible)
+        // Hit Check
+        if (player != null && !playerScript.IsInvisible)
+        {
+            float distance = Vector2.Distance(transform.position, player.position);
+            if (distance <= attackRange * 1.2f) 
             {
-                float distance = Vector2.Distance(transform.position, player.position);
-                if (distance <= attackRange * 1.2f) 
-                {
-                    playerScript.TakeDamage(damage);
-                    Debug.Log("Enemy Hit Player!");
-                }
+                playerScript.TakeDamage(damage);
+                Debug.Log("Enemy Hit Player!");
             }
+        }
+    }
+
+    IEnumerator AttackRoutine()
+    {
+        isAttackingFlag = true;
+        currentState = EnemyState.Attacking;
+        StopMoving(); // Ensure we don't slide
+
+        // Old sound placement: moved to PerformAttackLogic if using event? 
+        // Actually, sound usually syncs with the SWING, so PerformAttackLogic is good.
+        // But if we want a "Windup" sound, that's different. Let's keep it simple.
+
+        if (useAnimationEvent)
+        {
+            // Wait for the animation to play out
+            yield return new WaitForSeconds(attackStateDuration);
+        }
+        else
+        {
+            // Fallback: Time-based logic
+            yield return new WaitForSeconds(attackDelay);
+            PerformAttackLogic();
+            // Wait remaining time if any, or just exit?
+            // Let's assume attackDelay was the "Windup". We might want a "Recovery" delay too.
+            yield return new WaitForSeconds(0.2f); // Short recovery
         }
         
         isAttackingFlag = false;
@@ -578,6 +612,29 @@ public class Enemy : MonoBehaviour
         ApplyStun(stunDuration);
             
         knockbackCoroutine = null;
+    }
+
+    void UpdateAnimation()
+    {
+        if (animator == null) return;
+
+        bool isAttacking = (currentState == EnemyState.Attacking);
+        // We consider walking if we are Chasing and moving. 
+        // Note: linearVelocity.x could be non-zero due to knockback, so checking currentState helps avoid "Walk" anim while flying from knockback.
+        bool isMoving = Mathf.Abs(rb.linearVelocity.x) > 0.1f;
+        bool isChasing = (currentState == EnemyState.Chasing);
+
+        // Logic:
+        // Attack overrides everything.
+        // If not attacking, valid walk requires moving AND (Chasing OR Idle but pushed?). 
+        // Usually safer to restrict Walk to Chasing or Idle states to avoid walking while Stunned/KnockedBack.
+        
+        bool showWalk = !isAttacking && isMoving && (currentState == EnemyState.Chasing || currentState == EnemyState.Idle);
+        bool showIdle = !isAttacking && !showWalk;
+
+        animator.SetBool("EnemyAttack", isAttacking);
+        animator.SetBool("EnemyWalk", showWalk);
+        animator.SetBool("EnemyIdle", showIdle);
     }
 
     void OnDrawGizmosSelected()

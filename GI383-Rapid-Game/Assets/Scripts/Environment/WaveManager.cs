@@ -174,7 +174,7 @@ public class WaveManager : MonoBehaviour
         if (waveUI != null)
         {
             waveUI.UpdateTimer(0);
-            waveUI.ShowCenterText("Wave Incoming");
+            waveUI.ShowCenterText("WARNING");
             if (SoundManager.Instance != null && !string.IsNullOrEmpty(waveIncomingSound))
             {
                 SoundManager.Instance.PlaySound(waveIncomingSound);

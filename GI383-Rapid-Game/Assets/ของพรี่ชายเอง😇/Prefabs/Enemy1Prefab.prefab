@@ -109,7 +109,7 @@ Transform:
   m_GameObject: {fileID: 4350801627000794339}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalPosition: {x: 0, y: -1.78, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -158,6 +158,7 @@ GameObject:
   - component: {fileID: 5571720972564415412}
   - component: {fileID: 8681830701378177456}
   - component: {fileID: 1433725132842515138}
+  - component: {fileID: 4439221473673787772}
   - component: {fileID: 1782460008279112897}
   - component: {fileID: -185897100427839236}
   m_Layer: 6
@@ -234,7 +235,7 @@ SpriteRenderer:
   m_SortingLayer: 5
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: ae461a0bfc95d0e47ab5175ce0c9d11b, type: 3}
+  m_Sprite: {fileID: 607412717719830977, guid: d403f9729833aec4fa9595174a91dc62, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0
@@ -278,8 +279,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.09, y: 0.0750469}
-  m_Size: {x: 0.9490197, y: 2.4259708}
+  m_Offset: {x: 0.017742753, y: -0.12029612}
+  m_Size: {x: 1.4352291, y: 3.5491507}
   m_Direction: 0
 --- !u!50 &1433725132842515138
 Rigidbody2D:
@@ -308,6 +309,28 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!95 &4439221473673787772
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6698984400229986755}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 4044c0b94b7d66d4b92ded0e9f44a0e9, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &1782460008279112897
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -336,7 +359,7 @@ MonoBehaviour:
   attackDelay: 0.5
   damage: 1
   attackPoint: {fileID: 241974018674737415}
-  attackArea: {x: 1.7, y: 2.16}
+  attackArea: {x: 1.7, y: 2.42}
   slash: {fileID: 7461607183011662884, guid: d74bb0a32e99661408211ffd2c0f76d3, type: 3}
   itemDropPrefab: {fileID: 1595820753878120275, guid: 3e98a5121867aa44ca355613c2b3cb1e, type: 3}
   minXP: 10
@@ -349,6 +372,8 @@ MonoBehaviour:
   takeDamageSound: Enemy_TakeDamage
   deathSound: Enemy_Die
   walkSoundInterval: 0.8
+  attackStateDuration: 0.45
+  useAnimationEvent: 1
 --- !u!210 &-185897100427839236
 SortingGroup:
   m_ObjectHideFlags: 0

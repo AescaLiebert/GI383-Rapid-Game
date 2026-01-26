@@ -21,6 +21,9 @@ public class InvisibleSkill : SkillBase
         Color originalColor = sr.color;
         sr.color = new Color(originalColor.r, originalColor.g, originalColor.b, 0.3f); // จางลง
 
+        if (SoundManager.Instance != null)
+                 SoundManager.Instance.PlaySound("Player_Invisible", player.transform.position);
+
         
 
         yield return new WaitForSeconds(duration);
