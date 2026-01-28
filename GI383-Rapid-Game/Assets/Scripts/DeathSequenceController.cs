@@ -98,6 +98,12 @@ public class DeathSequenceController : MonoBehaviour
             gameOverVideo.renderMode = VideoRenderMode.RenderTexture;
             gameOverVideo.isLooping = false; // Ensure it doesn't loop
 
+            // Fix: Load from StreamingAssets for Build Compatibility
+            string videoPath = System.IO.Path.Combine(Application.streamingAssetsPath, "LucidCityGameOver.mp4");
+            gameOverVideo.source = VideoSource.Url;
+            gameOverVideo.url = videoPath;
+            Debug.Log($"DeathSequence: Setting video path to {videoPath}");
+
             // Create a temporary Render Texture if one doesn't exist or isn't assigned
             if (gameOverVideo.targetTexture == null)
             {

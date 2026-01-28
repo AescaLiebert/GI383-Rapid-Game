@@ -315,6 +315,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: UI Panel
       objectReference: {fileID: 0}
+    - target: {fileID: 1368641631084052095, guid: 16d554ad25f7729419fb17a182f2af33, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1531583596809531688, guid: 16d554ad25f7729419fb17a182f2af33, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -393,6 +397,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4766075961378505425, guid: 16d554ad25f7729419fb17a182f2af33, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4774834949963562390, guid: 16d554ad25f7729419fb17a182f2af33, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4817412491407253213, guid: 16d554ad25f7729419fb17a182f2af33, type: 3}
+      propertyPath: m_PlayOnAwake
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5734933565383870940, guid: 16d554ad25f7729419fb17a182f2af33, type: 3}
@@ -488,6 +500,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8180151448666458969, guid: 16d554ad25f7729419fb17a182f2af33, type: 3}
+      propertyPath: m_fontSize
+      value: 220
+      objectReference: {fileID: 0}
+    - target: {fileID: 8180151448666458969, guid: 16d554ad25f7729419fb17a182f2af33, type: 3}
       propertyPath: m_fontColor.b
       value: 0.24884927
       objectReference: {fileID: 0}
@@ -499,6 +515,10 @@ PrefabInstance:
       propertyPath: m_fontColor.r
       value: 0.745283
       objectReference: {fileID: 0}
+    - target: {fileID: 8180151448666458969, guid: 16d554ad25f7729419fb17a182f2af33, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 220
+      objectReference: {fileID: 0}
     - target: {fileID: 8267274645436178825, guid: 16d554ad25f7729419fb17a182f2af33, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 96.45001
@@ -508,7 +528,8 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2067106928}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 7136834905712226946, guid: 16d554ad25f7729419fb17a182f2af33, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 16d554ad25f7729419fb17a182f2af33, type: 3}
@@ -668,9 +689,17 @@ PrefabInstance:
       propertyPath: baseDamage
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 5885729883357656711, guid: 336c58c912887fb4d9586ca29ce358df, type: 3}
+      propertyPath: camFollow
+      value: 
+      objectReference: {fileID: 950293298}
     - target: {fileID: 7038558445106783262, guid: 336c58c912887fb4d9586ca29ce358df, type: 3}
       propertyPath: baseDamage
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7371803606534911055, guid: 336c58c912887fb4d9586ca29ce358df, type: 3}
+      propertyPath: groundLayer.m_Bits
+      value: 72
       objectReference: {fileID: 0}
     - target: {fileID: 8513892293871985472, guid: 336c58c912887fb4d9586ca29ce358df, type: 3}
       propertyPath: m_Name
@@ -803,6 +832,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec081b4e926784f46b14b65020a097ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealthBarUI
+--- !u!114 &950293298 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7206713829059665955, guid: 336c58c912887fb4d9586ca29ce358df, type: 3}
+  m_PrefabInstance: {fileID: 555279491}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c37954c9cd7143479550766ad710ec6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraFollow
 --- !u!1001 &1059805164
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1286,7 +1326,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6960755422001756797, guid: 051c5493486df0942a4ce9e179eb4c06, type: 3}
       propertyPath: hpIncreasePercentage
-      value: 0.14
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 6960755422001756797, guid: 051c5493486df0942a4ce9e179eb4c06, type: 3}
       propertyPath: waveCountdown321Sound

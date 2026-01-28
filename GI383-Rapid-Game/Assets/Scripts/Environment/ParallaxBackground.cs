@@ -9,6 +9,7 @@ public class ParallaxBackground : MonoBehaviour
     public bool infiniteVertical = false;
 
     private Transform cameraTransform;
+    private CameraFollow cameraFollow;
     private Vector3 lastCameraPosition;
     private float textureUnitSizeX;
     private float textureUnitSizeY;
@@ -18,7 +19,13 @@ public class ParallaxBackground : MonoBehaviour
         if (Camera.main != null)
         {
             cameraTransform = Camera.main.transform;
-            lastCameraPosition = cameraTransform.position;
+            cameraFollow = cameraTransform.GetComponent<CameraFollow>();
+            
+            // Use logical position if available to avoid shake artifacts on start
+            if (cameraFollow != null)
+                lastCameraPosition = cameraFollow.GetLogicalPosition();
+            else
+                lastCameraPosition = cameraTransform.position;
         }
 
         SpriteRenderer sprite = GetComponent<SpriteRenderer>();
@@ -34,7 +41,8 @@ public class ParallaxBackground : MonoBehaviour
     {
         if (cameraTransform == null) return;
 
-        Vector3 deltaMovement = cameraTransform.position - lastCameraPosition;
+        Vector3 currentCameraPosition = (cameraFollow != null) ? cameraFollow.GetLogicalPosition() : cameraTransform.position;
+        Vector3 deltaMovement = currentCameraPosition - lastCameraPosition;
         
         // Move the layer by a fraction of the camera movement
         transform.position += new Vector3(
@@ -42,27 +50,27 @@ public class ParallaxBackground : MonoBehaviour
             deltaMovement.y * parallaxEffectMultiplier.y, 
             0);
             
-        lastCameraPosition = cameraTransform.position;
+        lastCameraPosition = currentCameraPosition;
 
         if (infiniteHorizontal && textureUnitSizeX > 0)
         {
-            float distCheck = Mathf.Abs(cameraTransform.position.x - transform.position.x);
+            float distCheck = Mathf.Abs(currentCameraPosition.x - transform.position.x);
             
             if (distCheck >= textureUnitSizeX)
             {
-                float offsetPositionX = (cameraTransform.position.x - transform.position.x) % textureUnitSizeX;
-                transform.position = new Vector3(cameraTransform.position.x + offsetPositionX, transform.position.y);
+                float offsetPositionX = (currentCameraPosition.x - transform.position.x) % textureUnitSizeX;
+                transform.position = new Vector3(currentCameraPosition.x + offsetPositionX, transform.position.y);
             }
         }
         
         if (infiniteVertical && textureUnitSizeY > 0)
         {
-            float distCheck = Mathf.Abs(cameraTransform.position.y - transform.position.y);
+            float distCheck = Mathf.Abs(currentCameraPosition.y - transform.position.y);
 
             if (distCheck >= textureUnitSizeY)
             {
-                float offsetPositionY = (cameraTransform.position.y - transform.position.y) % textureUnitSizeY;
-                transform.position = new Vector3(transform.position.x, cameraTransform.position.y + offsetPositionY);
+                float offsetPositionY = (currentCameraPosition.y - transform.position.y) % textureUnitSizeY;
+                transform.position = new Vector3(transform.position.x, currentCameraPosition.y + offsetPositionY);
             }
         }
     }

@@ -98,6 +98,15 @@ public class CameraFollow : MonoBehaviour
         shakeMagnitude = magnitude;
     }
 
+    /// <summary>
+    /// Returns the camera position without the shake offset. 
+    /// Useful for Parallax to avoid jittering with the shake.
+    /// </summary>
+    public Vector3 GetLogicalPosition()
+    {
+        return logicalPosition;
+    }
+
     void FindPlayer()
     {
         // Find by type is generally fast enough for initialization

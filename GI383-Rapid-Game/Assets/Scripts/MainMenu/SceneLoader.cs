@@ -7,6 +7,10 @@ using TMPro;
 
 public class SceneLoader : MonoBehaviour
 {
+    [Header("TutorialPanel")]
+    [SerializeField] private GameObject tutorialPanel;
+
+
     [Header("Transition Settings")]
     [SerializeField] private string targetSceneName = "Worldtestของพรี่ชาย😇Scene";
     [SerializeField] private float freezeDuration = 0.5f;
@@ -34,6 +38,13 @@ public class SceneLoader : MonoBehaviour
     [SerializeField] private string SFX_UI_Pressed = "SFX_UI_Pressed";
     [SerializeField] private string mainMenuBGMName = "MainMenuBGM";
     [SerializeField] private string SFX_Glitch = "SFX_Glitch";
+    [SerializeField] private string SFX_GlitchShort = "SFX_GlitchShort";
+
+    [Header("Intro Settings")]
+    [SerializeField] private GameObject buttonsPanel;
+    [SerializeField] private float introGlitchDuration = 0.8f;
+    [SerializeField] private float introFadeDuration = 1.0f;
+    [SerializeField] private bool playIntroOnStart = true;
 
     private void Start()
     {
@@ -45,10 +56,161 @@ public class SceneLoader : MonoBehaviour
             attemptText.gameObject.SetActive(false);
         }
 
-        // Play Main Menu BGM
+        // Try to auto-find buttons panel if not assigned
+        if (buttonsPanel == null)
+        {
+            // Common guesses
+            GameObject found = GameObject.Find("ButtonsPanel") ?? GameObject.Find("ButtonPanel");
+            if (found == null)
+            {
+                // Try finding a Start Button and getting its parent
+                var startBtn = GameObject.Find("StartButton") ?? GameObject.Find("Btn_Start");
+                if (startBtn != null) found = startBtn.transform.parent.gameObject;
+            }
+            if (found != null) buttonsPanel = found;
+        }
+
+        if (playIntroOnStart)
+        {
+            StartCoroutine(IntroSequence());
+        }
+        else
+        {
+            // Fallback: Just play Main Menu BGM
+            if (SoundManager.Instance != null && !string.IsNullOrEmpty(mainMenuBGMName))
+            {
+                SoundManager.Instance.PlayBGM(mainMenuBGMName);
+            }
+        }
+    }
+
+    private IEnumerator IntroSequence()
+    {
+        Vector2 finalButtonPos = Vector2.zero;
+        RectTransform btnRect = null;
+
+        // 1. Setup Buttons (Hide offscreen)
+        if (buttonsPanel != null)
+        {
+            btnRect = buttonsPanel.GetComponent<RectTransform>();
+            if (btnRect != null)
+            {
+                finalButtonPos = btnRect.anchoredPosition;
+                // Move offscreen to the right
+                btnRect.anchoredPosition = new Vector2(finalButtonPos.x + 1000f, finalButtonPos.y); 
+            }
+        }
+
+        // 2. Create Intro UI
+        Canvas introCanvas;
+        Image introBlackScreen;
+        List<Image> introGlitchBars = new List<Image>();
+        CreateIntroUI(out introCanvas, out introBlackScreen, introGlitchBars);
+
+        // 3. Play Glitch SFX
+        if (SoundManager.Instance != null && !string.IsNullOrEmpty(SFX_GlitchShort))
+        {
+            SoundManager.Instance.PlaySound(SFX_GlitchShort);
+        }
+
+        // 4. Glitch Loop
+        float elapsed = 0f;
+        while (elapsed < introGlitchDuration)
+        {
+            // Flash background
+             if (Random.value > 0.8f)
+                introBlackScreen.color = glitchColors[Random.Range(0, glitchColors.Length)];
+            else
+                introBlackScreen.color = new Color(0, 0, 0, Random.Range(0f, 0.1f));
+
+            // Random bars
+            foreach (var bar in introGlitchBars)
+            {
+                bool active = Random.value > 0.5f;
+                bar.gameObject.SetActive(active);
+                if (active)
+                {
+                    RectTransform r = bar.rectTransform;
+                    r.anchorMin = new Vector2(0, Random.value);
+                    r.anchorMax = new Vector2(1, r.anchorMin.y + Random.Range(0.01f, 0.15f));
+                    bar.color = glitchColors[Random.Range(0, glitchColors.Length)];
+                }
+            }
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        // 5. Solid Black
+        introBlackScreen.color = Color.black;
+        foreach (var bar in introGlitchBars) bar.gameObject.SetActive(false);
+        
+        yield return new WaitForSeconds(0.2f); // Short hold explicitly
+
+        // 6. Play BGM
         if (SoundManager.Instance != null && !string.IsNullOrEmpty(mainMenuBGMName))
         {
             SoundManager.Instance.PlayBGM(mainMenuBGMName);
+        }
+
+        // 7. Fade Out Black
+        elapsed = 0f;
+        while (elapsed < introFadeDuration)
+        {
+            float t = elapsed / introFadeDuration;
+            introBlackScreen.color = new Color(0, 0, 0, 1f - t);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        introBlackScreen.color = Color.clear;
+        Destroy(introCanvas.gameObject);
+
+        // 8. Slide Buttons In
+        if (btnRect != null)
+        {
+            Vector2 startPos = btnRect.anchoredPosition;
+            elapsed = 0f;
+            float slideDur = 0.8f; // Smooth slide
+
+            while (elapsed < slideDur)
+            {
+                float t = elapsed / slideDur;
+                // Ease Out Cubic
+                t = 1f - Mathf.Pow(1f - t, 3);
+                
+                btnRect.anchoredPosition = Vector2.Lerp(startPos, finalButtonPos, t);
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            btnRect.anchoredPosition = finalButtonPos;
+        }
+    }
+
+    private void CreateIntroUI(out Canvas canvas, out Image blackScreen, List<Image> glitchBars)
+    {
+        GameObject canvasObj = new GameObject("IntroCanvas");
+        // Keep it in scene but temporary
+        canvas = canvasObj.AddComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvas.sortingOrder = 30000;
+        canvasObj.AddComponent<CanvasScaler>();
+        
+        GameObject bgObj = new GameObject("BlackScreen");
+        bgObj.transform.SetParent(canvasObj.transform, false);
+        blackScreen = bgObj.AddComponent<Image>();
+        blackScreen.color = Color.black;
+        blackScreen.rectTransform.anchorMin = Vector2.zero;
+        blackScreen.rectTransform.anchorMax = Vector2.one;
+        blackScreen.rectTransform.offsetMin = Vector2.zero;
+        blackScreen.rectTransform.offsetMax = Vector2.zero;
+
+        for(int i=0; i<glitchBarCount; i++)
+        {
+             GameObject bar = new GameObject($"IntroBar_{i}");
+             bar.transform.SetParent(canvasObj.transform, false);
+             Image img = bar.AddComponent<Image>();
+             img.color = Color.white;
+             bar.SetActive(false);
+             glitchBars.Add(img);
         }
     }
 
@@ -88,6 +250,25 @@ public class SceneLoader : MonoBehaviour
         DontDestroyOnLoad(controllerObj);
 
         controller.StartTransition(targetSceneName, freezeDuration, glitchDuration, loadingDelay, fadeDuration, glitchBarCount, glitchColors, attemptText);
+    }
+
+    public void ExitGame()
+    {
+        if (SoundManager.Instance != null && !string.IsNullOrEmpty(SFX_UI_Pressed))
+        {
+            SoundManager.Instance.PlaySound(SFX_UI_Pressed);
+        }
+        Application.Quit();
+        Debug.Log("Exit Game");
+    }
+
+    public void OpenTutorialPanel()
+    {
+        if (SoundManager.Instance != null && !string.IsNullOrEmpty(SFX_UI_Pressed))
+        {
+            SoundManager.Instance.PlaySound(SFX_UI_Pressed);
+        }
+        tutorialPanel.SetActive(true);
     }
 }
 

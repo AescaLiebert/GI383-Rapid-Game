@@ -79,7 +79,7 @@ public class Player : MonoBehaviour
 
         if (camFollow != null)
         {
-            camFollow.TriggerShake(0.2f, 0.3f);
+            camFollow.TriggerShake(0.2f, 0.5f);
         }
         // Hit stop?
         StartCoroutine(HitStopRoutine());

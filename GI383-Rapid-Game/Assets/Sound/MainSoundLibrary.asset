@@ -120,7 +120,6 @@ MonoBehaviour:
   - soundName: Enemy_Die
     clips:
     - {fileID: 8300000, guid: 031cc43a4f574f147885aa225c758ab6, type: 3}
-    - {fileID: 8300000, guid: bb9692fb03a30bc428ef437710a4b403, type: 3}
     volume: 0.3
     pitch: 1
     pitchVariance: 0.2
@@ -173,7 +172,13 @@ MonoBehaviour:
     pitchVariance: 0.2
   - soundName: SFX_Glitch
     clips:
-    - {fileID: 8300000, guid: 609d9e39e9bcc964a93f8538f561df03, type: 3}
+    - {fileID: 8300000, guid: 5db05fc9dcf1fc7479e10a35d90d4f05, type: 3}
+    volume: 1
+    pitch: 1
+    pitchVariance: 0.1
+  - soundName: SFX_GlitchShort
+    clips:
+    - {fileID: 8300000, guid: 124c4e8a4bde95140a804f7cffbdc807, type: 3}
     volume: 1
     pitch: 1
     pitchVariance: 0.1
